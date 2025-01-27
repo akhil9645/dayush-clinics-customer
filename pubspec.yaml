@@ -1,0 +1,51 @@
+name: dayush_clinic
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts:
+  get:
+  flutter_svg:
+  dio:
+  loading_animation_widget:
+  flutter_screenutil:
+  pinput:
+  cupertino_icons: ^1.0.8
+  agora_rtc_engine: ^6.5.0
+  permission_handler: ^11.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.1
+  flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  web:
+    generate: true
+  windows:
+    generate: true
+  macos:
+    generate: true
+  remove_alpha_ios: true
+  image_path: "assets/images/Screenshot 2024-12-24 185922.png"
+  adaptive_icon_foreground: "assets/images/Screenshot 2024-12-24 185922.png"
+  adaptive_icon_background: "#ffffff"
+
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/svg/
+    - assets/svg/authicons/
