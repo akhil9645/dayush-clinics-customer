@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final TextEditingController phonenumcontroller = TextEditingController();
+  final TextEditingController emailcontroller = TextEditingController();
   final TextEditingController passwordcontroller = TextEditingController();
   final Authcontroller authcontroller = Get.put(Authcontroller());
 
@@ -43,13 +43,13 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 20.h),
               CommonWidgets().commontextformfield(
-                  txtcontroller: phonenumcontroller,
-                  hinttext: 'Phone Number',
+                  txtcontroller: emailcontroller,
+                  hinttext: 'Email',
                   icon: Icon(
-                    Icons.phone,
+                    Icons.email,
                     color: Constants.buttoncolor,
                   ),
-                  inputtype: TextInputType.phone),
+                  inputtype: TextInputType.emailAddress),
               SizedBox(height: 10.h),
               Stack(
                 alignment: Alignment.centerRight,
@@ -79,8 +79,12 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 35.h),
               CommonWidgets().commonbutton(
                 title: 'Login',
-                ontap: () {
-                  Get.toNamed(PageRoutes.mainpage);
+                ontap: () async {
+                  var status = await authcontroller.userLogin(
+                      emailcontroller.text, passwordcontroller.text);
+                  if (status == true) {
+                    Get.toNamed(PageRoutes.mainpage);
+                  }
                 },
               ),
               SizedBox(height: 35.h),

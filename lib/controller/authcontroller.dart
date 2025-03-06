@@ -15,23 +15,48 @@ class Authcontroller extends GetxController {
     String confirmpassword,
   ) async {
     var body = {
-      "username": username,
+      "username": username.trim(),
+      "email": email.trim(),
+      "password": password,
+      "password_confirmation": confirmpassword,
+      "phone_number": phonenumber.trim(),
+    };
+
+    log('Request Body: ${jsonEncode(body)}');
+
+    var response = await DioHandler.dioPOSTNoAuth(
+        body: body, endpoint: 'accounts/register/');
+
+    if (response != null) {
+      log(jsonEncode(response));
+    } else {
+      log("Response is null");
+    }
+    return response;
+  }
+
+  userLogin(
+    String email,
+    String password,
+  ) async {
+    var body = {
       "email": email,
       "password": password,
-      "phone_number": phonenumber,
-      "password_confirmation": confirmpassword
     };
 
     // Print the encoded JSON body
     log('Request Body: $body');
 
     var response =
-        await DioHandler.dioPOST(body: body, endpoint: 'accounts/register/');
+        await DioHandler.dioPOSTNoAuth(body: body, endpoint: 'accounts/login/');
     if (response != null) {
-      log(response);
+      log(response.toString());
+
+      return true;
     } else {
-      log(response);
+      log(response.toString());
+
+      return false;
     }
-    return response;
   }
 }

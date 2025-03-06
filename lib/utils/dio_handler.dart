@@ -1,35 +1,85 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-var baseUrl = "http://192.168.1.8:8000/";
+var baseUrl =
+    "https://871d-2401-4900-1cde-c6d2-2065-ccd6-46f-b995.ngrok-free.app/";
 
 class DioHandler {
-  static final Dio dio = Dio();
+  static Dio dio = Dio(BaseOptions(
+    validateStatus: (status) {
+      if (status == 401) {
+        return true;
+      } else if (status == 403) {
+        return true;
+      } else if (status == 500) {
+        return true;
+      } else if (status == 400) {
+        return true;
+      } else if (status == 409) {
+        return true;
+      }
+      return status! >= 200 && status < 300;
+    },
+  ));
 
-  static Future<dynamic> dioPOST({dynamic body, String? endpoint}) async {
-    Map<String, dynamic> headers = {
-      "content-type": "application/json",
-    };
-    var combinedurl = baseUrl + endpoint!;
-    print(combinedurl);
-    DioHandler.dio.options.headers.addAll(headers);
+  static Future<dynamic> dioPOSTNoAuth({dynamic body, String? endpoint}) async {
     try {
-      Response response;
+      log(baseUrl + endpoint!);
+      log(jsonEncode(body)); // Ensure the body is properly logged
 
-      response = await DioHandler.dio
-          .post(
-            combinedurl,
-            data: body,
-          )
+      Response response = await dio
+          .post(baseUrl + endpoint,
+              data: body,
+              options: Options(headers: {"content-type": "application/json"}))
           .timeout(const Duration(seconds: 60));
-      print(response);
 
-      return response.data;
+      log('Response status: ${response.statusCode}');
+      log(jsonEncode(
+          response.data)); // Convert response to JSON string before logging
+
+      switch (response.statusCode) {
+        case 200:
+          return response.data;
+        case 400:
+          return {
+            'error': 'Bad Request',
+            'message': response.data['message'] ?? 'Invalid input'
+          };
+        case 401:
+          return {
+            'error': 'Unauthorized',
+            'message': response.data['message'] ?? 'Invalid credentials'
+          };
+        case 403:
+          return {
+            'error': 'Forbidden',
+            'message': response.data['message'] ?? 'Resource not found'
+          };
+        case 404:
+          return {
+            'error': 'Not Found',
+            'message': response.data['message'] ?? 'Resource not found'
+          };
+        case 500:
+          return {
+            'error': 'Server Error',
+            'message': response.data['message'] ?? 'Internal server error'
+          };
+        default:
+          return {
+            'error': 'Unexpected Error',
+            'message': 'Something went wrong.'
+          };
+      }
     } catch (e) {
-      log("DioError: $e");
-      return e;
+      log("Error caught in catch block: ${e.toString()}");
+      return jsonEncode({
+        'error': 'Network Error',
+        'message': e.toString()
+      }); // Ensure returning a String
     }
   }
 

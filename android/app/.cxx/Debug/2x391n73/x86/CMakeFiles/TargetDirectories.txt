@@ -1,0 +1,2 @@
+C:/Users/akhil/dayush/dayush_clinic/android/app/.cxx/Debug/2x391n73/x86/CMakeFiles/edit_cache.dir
+C:/Users/akhil/dayush/dayush_clinic/android/app/.cxx/Debug/2x391n73/x86/CMakeFiles/rebuild_cache.dir
