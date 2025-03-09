@@ -1,10 +1,12 @@
 import 'package:dayush_clinic/controller/authcontroller.dart';
-import 'package:dayush_clinic/utils/common_widgets/common_widgets.dart';
+import 'package:dayush_clinic/utils/validation_helper.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Forgetpassword extends StatelessWidget {
   Forgetpassword({super.key});
@@ -125,23 +127,38 @@ class Forgetpassword extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.h),
-              Obx(() => CommonWidgets().commontextformfield(
-                  txtcontroller: textcontoller,
-                  inputtype: authcontroller.isPhoneSelected.value
+              Obx(() => CommonWidgets().commonTextfield(
+                  textController: textcontoller,
+                  validator: (p0) => authcontroller.isPhoneSelected.value
+                      ? ValidationHelper.phoneNumberValidation(p0 ?? '')
+                      : ValidationHelper.emailValidation(p0 ?? ''),
+                  keyboardtype: authcontroller.isPhoneSelected.value
                       ? TextInputType.phone
                       : TextInputType.emailAddress,
-                  icon: Icon(
+                  prefixIcon: Icon(
                     authcontroller.isPhoneSelected.value
                         ? Icons.phone
                         : Icons.email_rounded,
                     color: Constants.buttoncolor,
                   ),
-                  hinttext: authcontroller.isPhoneSelected.value
+                  hintText: authcontroller.isPhoneSelected.value
                       ? 'Phone Number'
                       : 'Email ID')),
               SizedBox(height: 20.h),
               CommonWidgets().commonbutton(
-                title: 'Reset Password',
+                title: authcontroller.isLoading.value
+                    ? LoadingAnimationWidget.fourRotatingDots(
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width / 10,
+                      )
+                    : Text(
+                        'Reset Password',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                 ontap: () => Get.toNamed(PageRoutes.resetpassword),
               )
             ],

@@ -1,4 +1,4 @@
-import 'package:dayush_clinic/utils/common_widgets/common_widgets.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,10 +72,18 @@ class Splashscreendialogue extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.all(24.0).r,
                     child: CommonWidgets().commonbutton(
-                        ontap: () {
-                          Get.toNamed(PageRoutes.login);
-                        },
-                        title: 'Get Started'),
+                      ontap: () {
+                        Get.toNamed(PageRoutes.login);
+                      },
+                      title: Text(
+                        'Get Started',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

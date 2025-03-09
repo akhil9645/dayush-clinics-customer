@@ -1,4 +1,4 @@
-import 'package:dayush_clinic/utils/common_widgets/common_widgets.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -218,7 +218,14 @@ class DoctorCard extends StatelessWidget {
                     buttonheight: 20,
                     fontsize: 8,
                     buttonwidth: 50,
-                    title: 'Book Appointment',
+                    title: Text(
+                      'Book Appointment',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     ontap: () {
                       Get.toNamed(PageRoutes.bookappointment);
                     },

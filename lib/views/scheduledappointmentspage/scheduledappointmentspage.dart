@@ -1,4 +1,4 @@
-import 'package:dayush_clinic/utils/common_widgets/common_widgets.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -186,7 +186,15 @@ Widget _buildAppointmentCard(
                         ? Get.toNamed(PageRoutes.videocallmainpage)
                         : null;
                   },
-                  title: tab != 'CH' ? 'Consult Now' : 'Download Prescription')
+                  title: Text(
+                    tab != 'CH' ? 'Consult Now' : 'Download Prescription',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
               : SizedBox(),
         ],
       ),

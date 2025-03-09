@@ -1,10 +1,11 @@
 import 'package:dayush_clinic/controller/authcontroller.dart';
-import 'package:dayush_clinic/utils/common_widgets/common_widgets.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pinput/pinput.dart';
 
 class Resetpassword extends StatelessWidget {
@@ -78,7 +79,19 @@ class Resetpassword extends StatelessWidget {
               ),
               SizedBox(height: 20.h),
               CommonWidgets().commonbutton(
-                title: 'Verify',
+                title: authcontroller.isLoading.value
+                    ? LoadingAnimationWidget.fourRotatingDots(
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width / 10,
+                      )
+                    : Text(
+                        'Verify',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                 ontap: () {
                   Get.toNamed(PageRoutes.createnewpassword);
                 },

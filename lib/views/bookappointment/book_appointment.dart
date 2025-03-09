@@ -1,4 +1,4 @@
-import 'package:dayush_clinic/utils/common_widgets/common_widgets.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -227,7 +227,14 @@ class BookAppointment extends StatelessWidget {
           ),
           SizedBox(height: MediaQuery.of(context).size.width / 6),
           CommonWidgets().commonbutton(
-            title: 'Book Appointment',
+            title: Text(
+              'Book Appointment',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             ontap: () {},
           )
         ]),

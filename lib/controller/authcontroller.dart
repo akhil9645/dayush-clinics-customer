@@ -1,11 +1,17 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dayush_clinic/services/api_endpoints.dart';
 import 'package:dayush_clinic/utils/dio_handler.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Authcontroller extends GetxController {
   Rx<bool> isPhoneSelected = true.obs;
+  Rx<bool> isLoading = false.obs;
+  Rx<bool> isobscured = false.obs;
+  Rx<bool> isobscuredForConfirm = false.obs;
 
   userRegistration(
     String username,
@@ -35,27 +41,36 @@ class Authcontroller extends GetxController {
     return response;
   }
 
-  userLogin(
-    String email,
-    String password,
-  ) async {
-    var body = {
-      "email": email,
-      "password": password,
-    };
+  userLogin(String email, String password, BuildContext context) async {
+    try {
+      isLoading.value = true;
 
-    // Print the encoded JSON body
-    log('Request Body: $body');
+      var body = {
+        "email": email,
+        "password": password,
+      };
 
-    var response =
-        await DioHandler.dioPOSTNoAuth(body: body, endpoint: 'accounts/login/');
-    if (response != null) {
-      log(response.toString());
+      log('Request Body: $body');
 
-      return true;
-    } else {
-      log(response.toString());
+      var response = await DioHandler.dioPOSTNoAuth(
+        body: jsonEncode(body),
+        endpoint: ApiEndpoints.login,
+      );
 
+      if (response != null && response['access'] != null) {
+        log("Login Success: ${response.toString()}");
+        isLoading.value = false;
+        return true;
+      } else {
+        log("Login Failed: ${response.toString()}");
+        isLoading.value = false;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(CommonWidgets().snackBarinfo(response['message']));
+        return false;
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log("Exception: $e");
       return false;
     }
   }
