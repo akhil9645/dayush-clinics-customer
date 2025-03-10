@@ -1,6 +1,7 @@
 import 'package:dayush_clinic/views/authpages/createnewpassword.dart';
 import 'package:dayush_clinic/views/authpages/forgetpassword.dart';
 import 'package:dayush_clinic/views/authpages/login_page.dart';
+import 'package:dayush_clinic/views/authpages/otp_screen.dart';
 import 'package:dayush_clinic/views/authpages/resetpassword.dart';
 import 'package:dayush_clinic/views/authpages/signup_page.dart';
 import 'package:dayush_clinic/views/bookappointment/book_appointment.dart';
@@ -23,6 +24,7 @@ class PageRoutes {
   static const mainpage = '/mainpage';
   static const categorydetailpage = '/categorydetailpage';
   static const bookappointment = '/bookappointment';
+  static const verifyOtp = '/verifyOtp';
 }
 
 List<GetPage<dynamic>> getpages = [
@@ -82,5 +84,5 @@ List<GetPage<dynamic>> getpages = [
       name: PageRoutes.bookappointment,
       page: () => BookAppointment(),
       transition: Transition.cupertino,
-      transitionDuration: Duration(milliseconds: 200))
+      transitionDuration: Duration(milliseconds: 200)),
 ];

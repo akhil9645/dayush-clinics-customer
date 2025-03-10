@@ -3,7 +3,8 @@ import 'package:dayush_clinic/services/tokenstorage_Service.dart';
 import 'package:dio/dio.dart';
 
 class DioHandler {
-  static const baseUrl = 'https://1435-59-93-232-153.ngrok-free.app/';
+  static const baseUrl =
+      'https://c735-2401-4900-1cdf-6f20-5f7f-7fa9-d7a4-df70.ngrok-free.app/';
   static Dio dio = Dio(BaseOptions(
     validateStatus: (status) {
       if (status == 401) {
@@ -40,11 +41,15 @@ class DioHandler {
       // Handling different status codes
       switch (response.statusCode) {
         case 200:
+          return response.data;
+        case 201:
           return response.data; // Successful response
         case 400:
           return {
             'error': 'Bad Request',
-            'message': response.data['message'] ?? 'Invalid input'
+            'message': response.data['non_field_errors']?.isNotEmpty == true
+                ? response.data['non_field_errors'][0]
+                : response.data['detail'] ?? 'Invalid input'
           };
         case 401:
           return {
@@ -160,6 +165,8 @@ class DioHandler {
 
       switch (response.statusCode) {
         case 200:
+          return response.data;
+        case 201:
           return response.data; // Success, return the response body
         case 400:
           return {
@@ -194,10 +201,6 @@ class DioHandler {
       }
     } catch (e) {
       log("Error $e");
-      return {
-        'error': 'Network Error',
-        'message': '  Failed to connect to the server.'
-      };
     }
   }
 
@@ -214,6 +217,8 @@ class DioHandler {
       // Handle different status codes
       switch (response.statusCode) {
         case 200:
+          return response.data;
+        case 201:
           return response.data; // Success, return the response body
         case 400:
           return {
@@ -248,10 +253,6 @@ class DioHandler {
       }
     } catch (e) {
       log("Error $e");
-      return {
-        'error': 'Network Error',
-        'message': '  Failed to connect to the server.'
-      };
     }
   }
 }

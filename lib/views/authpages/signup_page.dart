@@ -154,32 +154,33 @@ class SignupPage extends StatelessWidget {
                       textController: confirmpasswordcontroller),
                 ),
                 SizedBox(height: 30.h),
-                CommonWidgets().commonbutton(
-                  title: authcontroller.isLoading.value
-                      ? LoadingAnimationWidget.fourRotatingDots(
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.width / 10,
-                        )
-                      : Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                  ontap: () async {
-                    if (formKey.currentState!.validate()) {
-                      print('button pressed');
-                      authcontroller.userRegistration(
-                          fullnamecontroller.text,
-                          emailcontroller.text,
-                          passwordcontroller.text,
-                          phonnumcontroller.text,
-                          confirmpasswordcontroller.text);
-                    }
-                  },
-                )
+                Obx(() => CommonWidgets().commonbutton(
+                      title: authcontroller.isLoading.value
+                          ? LoadingAnimationWidget.fourRotatingDots(
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width / 10,
+                            )
+                          : Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                      ontap: () async {
+                        if (formKey.currentState!.validate()) {
+                          print('button pressed');
+                          authcontroller.userRegistration(
+                              fullnamecontroller.text,
+                              emailcontroller.text,
+                              passwordcontroller.text,
+                              phonnumcontroller.text,
+                              confirmpasswordcontroller.text,
+                              context);
+                        }
+                      },
+                    ))
               ],
             ),
           ),
