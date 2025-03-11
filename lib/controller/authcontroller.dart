@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dayush_clinic/services/api_endpoints.dart';
+import 'package:dayush_clinic/services/tokenstorage_Service.dart';
 import 'package:dayush_clinic/utils/dio_handler.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:dayush_clinic/views/authpages/otp_screen.dart';
@@ -15,6 +16,17 @@ class Authcontroller extends GetxController {
   Rx<bool> isLoading = false.obs;
   Rx<bool> isobscured = false.obs;
   Rx<bool> isobscuredForConfirm = false.obs;
+  var countdown = 300.obs;
+
+  void startTimer() {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if (countdown.value > 0) {
+        countdown.value--;
+      } else {
+        timer.cancel(); // Stop timer when it reaches 0
+      }
+    });
+  }
 
   userRegistration(
     String username,
@@ -49,7 +61,10 @@ class Authcontroller extends GetxController {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => VerifyOtp(userEmail: response["email"]),
+                builder: (context) => VerifyOtp(
+                  email: response["email"],
+                  from: 'userverify',
+                ),
               ));
         } else if (response.containsKey("message") &&
             response["message"] ==
@@ -59,7 +74,10 @@ class Authcontroller extends GetxController {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => VerifyOtp(userEmail: response["email"]),
+                builder: (context) => VerifyOtp(
+                  email: response["email"],
+                  from: 'userverify',
+                ),
               ));
         } else {
           isLoading.value = false;
@@ -104,6 +122,7 @@ class Authcontroller extends GetxController {
       if (response != null && response['access'] != null) {
         log("Login Success: ${response.toString()}");
         isLoading.value = false;
+        await TokenStorageService().storeToken(response['access']);
         return true;
       } else {
         log("Login Failed: ${response.toString()}");
@@ -136,6 +155,135 @@ class Authcontroller extends GetxController {
           // ✅ Navigate to login screen on successful activation
           isLoading.value = false;
           Get.toNamed(PageRoutes.login);
+        } else {
+          // ❌ Show error message if OTP is invalid or another issue occurs
+          isLoading.value = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+            CommonWidgets().snackBarinfo(response["message"] ?? "Invalid OTP."),
+          );
+        }
+      } else {
+        isLoading.value = false;
+        log("Response is null");
+        ScaffoldMessenger.of(context).showSnackBar(
+          CommonWidgets()
+              .snackBarinfo("Something went wrong. Please try again."),
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log("Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        CommonWidgets()
+            .snackBarinfo("An error occurred. Please check your connection."),
+      );
+    }
+  }
+
+  forgetPassword(String emailId, BuildContext context) async {
+    try {
+      isLoading.value = true;
+      final response = await DioHandler.dioPOSTNoAuth(
+        endpoint: 'accounts/forgot-password/',
+        body: json.encode({'email': emailId}),
+      );
+
+      if (response != null) {
+        log(jsonEncode(response));
+
+        if (response.containsKey("message") &&
+            response["message"] == "OTP sent to your email.") {
+          // ✅ Navigate to login screen on successful activation
+          isLoading.value = false;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifyOtp(
+                  email: emailId,
+                  from: 'forgetpass',
+                ),
+              ));
+        } else {
+          // ❌ Show error message if OTP is invalid or another issue occurs
+          isLoading.value = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+            CommonWidgets().snackBarinfo(response["message"] ?? "Invalid OTP."),
+          );
+        }
+      } else {
+        isLoading.value = false;
+        log("Response is null");
+        ScaffoldMessenger.of(context).showSnackBar(
+          CommonWidgets()
+              .snackBarinfo("Something went wrong. Please try again."),
+        );
+      }
+    } catch (e) {
+      log("Exception : $e");
+    }
+  }
+
+  Future<void> forgetPassvalidateOtp(
+      String officialMailId, String otp, BuildContext context) async {
+    try {
+      isLoading.value = true;
+      final response = await DioHandler.dioPOSTNoAuth(
+        endpoint: 'accounts/forgot-pass-otp/',
+        body: json.encode({'email': officialMailId, 'otp': otp}),
+      );
+
+      if (response != null) {
+        log(jsonEncode(response));
+
+        if (response.containsKey("message") &&
+            response["message"] ==
+                "OTP verified. You can now reset your password.") {
+          // ✅ Navigate to login screen on successful activation
+          isLoading.value = false;
+          Get.toNamed(PageRoutes.createnewpassword);
+        } else {
+          // ❌ Show error message if OTP is invalid or another issue occurs
+          isLoading.value = false;
+          ScaffoldMessenger.of(context).showSnackBar(
+            CommonWidgets().snackBarinfo(response["message"] ?? "Invalid OTP."),
+          );
+        }
+      } else {
+        isLoading.value = false;
+        log("Response is null");
+        ScaffoldMessenger.of(context).showSnackBar(
+          CommonWidgets()
+              .snackBarinfo("Something went wrong. Please try again."),
+        );
+      }
+    } catch (e) {
+      isLoading.value = false;
+      log("Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        CommonWidgets()
+            .snackBarinfo("An error occurred. Please check your connection."),
+      );
+    }
+  }
+
+  Future<void> forgetResetPassword(
+      String password, String confirmpassword, BuildContext context) async {
+    try {
+      isLoading.value = true;
+      final response = await DioHandler.dioPOSTNoAuth(
+        endpoint: 'accounts/forgot-pass-otp/',
+        body: json.encode({'email': password, 'otp': confirmpassword}),
+      );
+
+      if (response != null) {
+        log(jsonEncode(response));
+
+        if (response.containsKey("message") &&
+            response["message"] ==
+                "OTP verified. You can now reset your password.") {
+          // ✅ Navigate to login screen on successful activation
+          isLoading.value = false;
+          Get.toNamed(PageRoutes.createnewpassword);
         } else {
           // ❌ Show error message if OTP is invalid or another issue occurs
           isLoading.value = false;

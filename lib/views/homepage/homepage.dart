@@ -1,3 +1,4 @@
+import 'package:dayush_clinic/controller/homecontroller/homecontroller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -5,27 +6,35 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   Homepage({super.key});
 
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  final Homecontroller homecontroller = Get.put(Homecontroller());
+
   final TextEditingController searchcontroller = TextEditingController();
+
   final categoryimages = [
     'assets/images/d481906f8802fa20cea665be3998d197.png',
-    'assets/images/c0301b58c7a6336d8509dfdd7a892c56.png',
     'assets/images/c91b19a4f82085371267ec307b802460.png',
+    'assets/images/c0301b58c7a6336d8509dfdd7a892c56.png',
     'assets/images/c8ef29ed20d409bb0e8e07b71466980a.png',
     'assets/images/ee6457e6cf7aa69688584f84b263b5cd.png',
     'assets/images/5b2ab08d978be22d8702879b6a7d1efd.png'
   ];
-  final categorytitle = [
-    'Ayurveda',
-    'Yoga',
-    'Homeopathy',
-    'Unani',
-    'Siddha',
-    'Naturopathy'
-  ];
+
   final GlobalKey<ScaffoldState> _scafoldkey = GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    homecontroller.getAllCategories();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,44 +135,47 @@ class Homepage extends StatelessWidget {
                   fontWeight: FontWeight.w600),
             ),
             Constants().h10,
-            GridView.builder(
-              shrinkWrap: true,
-              itemCount: categorytitle.length,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () => Get.toNamed(PageRoutes.categorydetailpage),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Constants.buttoncolor,
-                        borderRadius: BorderRadius.circular(10.r)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 5.r),
-                        CircleAvatar(
-                          radius: 24.r,
-                          backgroundImage: AssetImage(categoryimages[index]),
-                        ),
-                        SizedBox(height: 5.r),
-                        Text(
-                          categorytitle[index],
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12.sp),
-                        ),
-                      ],
+            Obx(
+              () => GridView.builder(
+                shrinkWrap: true,
+                itemCount: homecontroller.categories.length,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                itemBuilder: (context, index) {
+                  var data = homecontroller.categories[index];
+                  return GestureDetector(
+                    onTap: () => Get.toNamed(PageRoutes.categorydetailpage),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Constants.buttoncolor,
+                          borderRadius: BorderRadius.circular(10.r)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 5.r),
+                          CircleAvatar(
+                            radius: 24.r,
+                            backgroundImage: AssetImage(categoryimages[index]),
+                          ),
+                          SizedBox(height: 5.r),
+                          Text(
+                            data['name'],
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12.sp),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
             Constants().h10,
             Text(

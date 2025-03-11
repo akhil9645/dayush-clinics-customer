@@ -4,12 +4,14 @@ import 'package:dio/dio.dart';
 
 class DioHandler {
   static const baseUrl =
-      'https://c735-2401-4900-1cdf-6f20-5f7f-7fa9-d7a4-df70.ngrok-free.app/';
+      'https://0d8f-2401-4900-1cdf-6f20-57e3-f315-6ce2-472a.ngrok-free.app/';
   static Dio dio = Dio(BaseOptions(
     validateStatus: (status) {
       if (status == 401) {
         return true;
       } else if (status == 403) {
+        return true;
+      } else if (status == 404) {
         return true;
       } else if (status == 500) {
         return true;
@@ -64,7 +66,16 @@ class DioHandler {
         case 404:
           return {
             'error': 'Not Found',
-            'message': response.data['message'] ?? 'Resource not found'
+            'message': response.data?['detail'] ??
+                response.data?['message'] ??
+                'Resource not found',
+          };
+        case 409:
+          return {
+            'error': 'Unexpected Error',
+            'message': response.data?['detail'] ??
+                response.data?['message'] ??
+                'Resource not found',
           };
         case 500:
           return {

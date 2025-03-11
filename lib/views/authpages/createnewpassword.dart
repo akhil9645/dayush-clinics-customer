@@ -15,13 +15,15 @@ class Createnewpassword extends StatelessWidget {
       TextEditingController();
   final Authcontroller authcontroller = Get.put(Authcontroller());
 
+  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: CommonWidgets().commonappbar(),
-        body: Padding(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CommonWidgets().commonappbar(),
+      body: Form(
+        key: formkey,
+        child: Padding(
           padding: const EdgeInsets.all(25).r,
           child: ListView(
             children: [
@@ -95,7 +97,12 @@ class Createnewpassword extends StatelessWidget {
               ),
               SizedBox(height: 20.h),
               CommonWidgets().commonbutton(
-                ontap: () {},
+                ontap: () async {
+                  if (formkey.currentState!.validate()) {
+                    authcontroller.forgetResetPassword(passwordcontroller.text,
+                        confirmpasswordcontroller.text, context);
+                  }
+                },
                 title: authcontroller.isLoading.value
                     ? LoadingAnimationWidget.fourRotatingDots(
                         color: Colors.white,
