@@ -40,7 +40,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
             border: Border.all(color: Colors.transparent)));
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CommonWidgets().commonappbar(),
+      appBar: CommonWidgets().commonappbar(''),
       body: Padding(
         padding: EdgeInsets.all(25.r),
         child: ListView(

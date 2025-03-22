@@ -1,9 +1,16 @@
+import 'package:dayush_clinic/services/tokenstorage_Service.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:get/get.dart';
 
 class Appcontroller extends GetxController {
-  splashCheck() {
-    Future.delayed(Duration(seconds: 3),
-        () => Get.offAllNamed(PageRoutes.splashscreendialogue));
+  splashCheck() async {
+    var token = await TokenStorageService().getToken();
+    if (token != null && token.isNotEmpty) {
+      Future.delayed(
+          Duration(seconds: 3), () => Get.offAllNamed(PageRoutes.mainpage));
+    } else {
+      Future.delayed(Duration(seconds: 3),
+          () => Get.offAllNamed(PageRoutes.splashscreendialogue));
+    }
   }
 }

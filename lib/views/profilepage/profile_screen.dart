@@ -1,9 +1,25 @@
+import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileController profileController = Get.put(ProfileController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    profileController.getUserProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +60,16 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 Constants().h10,
-                Text(
-                  'Akhil Jose',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
+                Obx(
+                  () => Text(
+                    profileController.username.value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -69,16 +87,16 @@ class ProfileScreen extends StatelessWidget {
                       title: 'Consultation History',
                       color: Color(0xFF0B6B3D),
                     ),
-                    _buildMenuItem(
-                      icon: Icons.calendar_today,
-                      title: 'Scheduled Appointments',
-                      color: Color(0xFF0B6B3D),
-                    ),
-                    _buildMenuItem(
-                      icon: Icons.payment,
-                      title: 'Payment Method',
-                      color: Color(0xFF0B6B3D),
-                    ),
+                    // _buildMenuItem(
+                    //   icon: Icons.calendar_today,
+                    //   title: 'Scheduled Appointments',
+                    //   color: Color(0xFF0B6B3D),
+                    // ),
+                    // _buildMenuItem(
+                    //   icon: Icons.payment,
+                    //   title: 'Payment Method',
+                    //   color: Color(0xFF0B6B3D),
+                    // ),
                     _buildMenuItem(
                       icon: Icons.question_answer,
                       title: 'FAQs',

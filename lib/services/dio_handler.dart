@@ -3,8 +3,7 @@ import 'package:dayush_clinic/services/tokenstorage_Service.dart';
 import 'package:dio/dio.dart';
 
 class DioHandler {
-  static const baseUrl =
-      'https://0d8f-2401-4900-1cdf-6f20-57e3-f315-6ce2-472a.ngrok-free.app/';
+  static const baseUrl = 'https://ced5-59-93-230-18.ngrok-free.app/';
   static Dio dio = Dio(BaseOptions(
     validateStatus: (status) {
       if (status == 401) {
@@ -173,6 +172,8 @@ class DioHandler {
             baseUrl + endpoint!,
           )
           .timeout(const Duration(seconds: 60));
+      log(baseUrl + endpoint);
+      log(response.data.toString());
 
       switch (response.statusCode) {
         case 200:

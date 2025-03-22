@@ -1,4 +1,5 @@
 import 'package:dayush_clinic/controller/homecontroller/homecontroller.dart';
+import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final Homecontroller homecontroller = Get.put(Homecontroller());
+  final ProfileController profileController = Get.find<ProfileController>();
 
   final TextEditingController searchcontroller = TextEditingController();
 
@@ -91,7 +93,7 @@ class _HomepageState extends State<Homepage> {
         child: ListView(
           children: [
             Text(
-              'Hi Veeru',
+              'Hi ${profileController.username}',
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 20.sp,
@@ -128,7 +130,7 @@ class _HomepageState extends State<Homepage> {
             ),
             Constants().h10,
             Text(
-              'Categories',
+              'Select Category',
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 18.sp,
@@ -149,7 +151,8 @@ class _HomepageState extends State<Homepage> {
                 itemBuilder: (context, index) {
                   var data = homecontroller.categories[index];
                   return GestureDetector(
-                    onTap: () => Get.toNamed(PageRoutes.categorydetailpage),
+                    onTap: () => Get.toNamed(PageRoutes.categorydetailpage,
+                        arguments: {'categoryId': data['id']}),
                     child: Container(
                       decoration: BoxDecoration(
                           color: Constants.buttoncolor,
@@ -177,82 +180,82 @@ class _HomepageState extends State<Homepage> {
                 },
               ),
             ),
-            Constants().h10,
-            Text(
-              'Activities',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600),
-            ),
-            Constants().h10,
-            ListView.builder(
-              itemCount: 2,
-              shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) {
-                var images = [
-                  'assets/images/0e4da77312f3cdaf1fb4ca76413499dc.png',
-                  'assets/images/2195c1d242926995266846621b834170.png'
-                ];
-                var titles = ['Daily Live Yoga Classes', '1-Day workshop'];
-                var subtitle = ['Morning-6.30-7.30 Am', 'Benefits of Ayurveda'];
-                var text = ['Evening-6.30-7.30 Pm', 'Morning-6.30-7.30 Am'];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10).r,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                      ),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0).r,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 100.w,
-                            height: 100.h,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10.r),
-                              child: Image.asset(
-                                images[index],
-                                fit: BoxFit.fitHeight,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 10.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                titles[index],
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                subtitle[index],
-                                style: TextStyle(
-                                    color: Colors.grey, fontSize: 12.sp),
-                              ),
-                              Text(
-                                text[index],
-                                style: TextStyle(
-                                    color: Colors.grey, fontSize: 12.sp),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            )
+            // Constants().h10,
+            // Text(
+            //   'Activities',
+            //   style: TextStyle(
+            //       color: Colors.black,
+            //       fontSize: 18.sp,
+            //       fontWeight: FontWeight.w600),
+            // ),
+            // Constants().h10,
+            // ListView.builder(
+            //   itemCount: 2,
+            //   shrinkWrap: true,
+            //   physics: BouncingScrollPhysics(),
+            //   padding: EdgeInsets.zero,
+            //   itemBuilder: (context, index) {
+            //     var images = [
+            //       'assets/images/0e4da77312f3cdaf1fb4ca76413499dc.png',
+            //       'assets/images/2195c1d242926995266846621b834170.png'
+            //     ];
+            //     var titles = ['Daily Live Yoga Classes', '1-Day workshop'];
+            //     var subtitle = ['Morning-6.30-7.30 Am', 'Benefits of Ayurveda'];
+            //     var text = ['Evening-6.30-7.30 Pm', 'Morning-6.30-7.30 Am'];
+            //     return Padding(
+            //       padding: const EdgeInsets.only(bottom: 10).r,
+            //       child: Container(
+            //         decoration: BoxDecoration(
+            //           border: Border.all(
+            //             color: Colors.grey,
+            //           ),
+            //           borderRadius: BorderRadius.circular(10.r),
+            //         ),
+            //         child: Padding(
+            //           padding: const EdgeInsets.all(10.0).r,
+            //           child: Row(
+            //             children: [
+            //               SizedBox(
+            //                 width: 100.w,
+            //                 height: 100.h,
+            //                 child: ClipRRect(
+            //                   borderRadius: BorderRadius.circular(10.r),
+            //                   child: Image.asset(
+            //                     images[index],
+            //                     fit: BoxFit.fitHeight,
+            //                   ),
+            //                 ),
+            //               ),
+            //               SizedBox(width: 10.w),
+            //               Column(
+            //                 crossAxisAlignment: CrossAxisAlignment.start,
+            //                 children: [
+            //                   Text(
+            //                     titles[index],
+            //                     style: TextStyle(
+            //                         color: Colors.black,
+            //                         fontSize: 16.sp,
+            //                         fontWeight: FontWeight.w600),
+            //                   ),
+            //                   Text(
+            //                     subtitle[index],
+            //                     style: TextStyle(
+            //                         color: Colors.grey, fontSize: 12.sp),
+            //                   ),
+            //                   Text(
+            //                     text[index],
+            //                     style: TextStyle(
+            //                         color: Colors.grey, fontSize: 12.sp),
+            //                   ),
+            //                 ],
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // )
           ],
         ),
       ),

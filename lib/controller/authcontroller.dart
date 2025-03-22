@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:dayush_clinic/services/api_endpoints.dart';
 import 'package:dayush_clinic/services/tokenstorage_Service.dart';
-import 'package:dayush_clinic/utils/dio_handler.dart';
+import 'package:dayush_clinic/services/dio_handler.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:dayush_clinic/views/authpages/otp_screen.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';

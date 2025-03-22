@@ -19,7 +19,7 @@ class Forgetpassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CommonWidgets().commonappbar(),
+      appBar: CommonWidgets().commonappbar(''),
       body: Form(
         key: formkey,
         child: Padding(

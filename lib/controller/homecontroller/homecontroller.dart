@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:dayush_clinic/utils/dio_handler.dart';
+import 'package:dayush_clinic/services/dio_handler.dart';
 import 'package:get/get.dart';
 
 class Homecontroller extends GetxController {

@@ -86,11 +86,17 @@ class CommonWidgets {
     );
   }
 
-  AppBar commonappbar() {
+  AppBar commonappbar(String title) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       forceMaterialTransparency: true,
+      centerTitle: true,
+      title: Text(
+        title,
+        style: TextStyle(
+            color: Colors.black, fontSize: 18.sp, fontWeight: FontWeight.bold),
+      ),
       leading: Padding(
         padding: EdgeInsets.only(left: 10.r),
         child: GestureDetector(

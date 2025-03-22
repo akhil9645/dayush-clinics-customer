@@ -1,37 +1,34 @@
+import 'package:dayush_clinic/controller/doctor_category_controller/doctor_category_controller.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class Categorydetailpage extends StatelessWidget {
-  final List<String> categories = [
-    'Ayurveda',
-    'Homeopathy',
-    'Siddha',
-    'Unani',
-    'Yoga',
-    'Naturopathy'
-  ];
+class Categorydetailpage extends StatefulWidget {
+  const Categorydetailpage({super.key});
 
-  final Map<String, String> categoryImages = {
-    'Ayurveda': 'assets/images/2195c1d242926995266846621b834170.png',
-    'Homeopathy': 'assets/images/e6057101935f8cde0cff7dc90d717c86.png',
-    'Siddha': 'assets/images/daf9d129356327697b638638e89f3732.png',
-    'Unani': 'assets/images/70986d5328473b11ea4bcd65d808d918.png',
-    'Yoga': 'assets/images/48afe0daf357a0cbc2c6bc3373d9dce8.png',
-    'Naturopathy': 'assets/images/24037a8a7b5a3e49856f4e5df42917b6.png',
-  };
+  @override
+  State<Categorydetailpage> createState() => _CategorydetailpageState();
+}
 
-  Categorydetailpage({super.key});
+class _CategorydetailpageState extends State<Categorydetailpage> {
+  final DoctorCategoryController doctorCategoryController =
+      Get.put(DoctorCategoryController());
+  late String categoryId;
+
+  @override
+  void initState() {
+    super.initState();
+    categoryId = Get.arguments['categoryId'].toString();
+    doctorCategoryController.getAvailableCategoryDoctors(
+        categoryId: categoryId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: categories.length,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,
@@ -53,32 +50,10 @@ class Categorydetailpage extends StatelessWidget {
                 },
                 icon: Icon(Icons.arrow_back_ios_new_rounded)),
           ),
-          bottom: TabBar(
-            isScrollable: true,
-            labelColor: Constants.buttoncolor,
-            unselectedLabelColor: Colors.grey,
-            labelStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.sp,
-                fontFamily: GoogleFonts.lato().fontFamily),
-            unselectedLabelStyle: TextStyle(
-                fontWeight: FontWeight.normal,
-                fontSize: 11.sp,
-                fontFamily: GoogleFonts.lato().fontFamily),
-            indicatorColor: Constants.buttoncolor,
-            tabs: categories.map((category) => Tab(text: category)).toList(),
-          ),
         ),
-        body: TabBarView(
-          children: categories
-              .map((category) => CategoryTab(
-                    category: category,
-                    imageUrl: categoryImages[category]!,
-                  ))
-              .toList(),
-        ),
-      ),
-    );
+        body: CategoryTab(
+            category: 'Ayurveda',
+            imageUrl: 'assets/images/2195c1d242926995266846621b834170.png'));
   }
 }
 
@@ -86,11 +61,14 @@ class CategoryTab extends StatelessWidget {
   final String category;
   final String imageUrl;
 
-  const CategoryTab({
+  CategoryTab({
     super.key,
     required this.category,
     required this.imageUrl,
   });
+
+  final DoctorCategoryController doctorCategoryController =
+      Get.find<DoctorCategoryController>();
 
   @override
   Widget build(BuildContext context) {
@@ -117,18 +95,34 @@ class CategoryTab extends StatelessWidget {
               children: [
                 Constants().h10,
                 Text(
-                  'Recommended Doctors',
+                  'Available Doctors',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 16),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 5, // Number of doctors
-                  itemBuilder: (context, index) => DoctorCard(),
+                Obx(
+                  () => doctorCategoryController.doctorsList.isNotEmpty
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount:
+                              doctorCategoryController.doctorsList.length,
+                          itemBuilder: (context, index) {
+                            var doctor =
+                                doctorCategoryController.doctorsList[index];
+                            return DoctorCard(
+                              experience: doctor['user']
+                                      ['years_of_experience'] ??
+                                  'N/A',
+                              name: '${doctor['user']['username']}s',
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text('Doctor List is Empty'),
+                        ),
                 ),
               ],
             ),
@@ -140,7 +134,10 @@ class CategoryTab extends StatelessWidget {
 }
 
 class DoctorCard extends StatelessWidget {
-  const DoctorCard({super.key});
+  String? name;
+  String? experience;
+
+  DoctorCard({super.key, this.experience, this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +173,7 @@ class DoctorCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Dr. John Doe',
+                    name ?? '',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -204,7 +201,7 @@ class DoctorCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          '15 Years Exp.',
+                          experience ?? '',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -219,7 +216,7 @@ class DoctorCard extends StatelessWidget {
                     fontsize: 8,
                     buttonwidth: 50,
                     title: Text(
-                      'Book Appointment',
+                      'Consult Now',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 12.sp,
@@ -227,7 +224,7 @@ class DoctorCard extends StatelessWidget {
                       ),
                     ),
                     ontap: () {
-                      Get.toNamed(PageRoutes.bookappointment);
+                      Get.toNamed(PageRoutes.patientInfo);
                     },
                   )
                 ],
