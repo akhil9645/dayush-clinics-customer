@@ -1,3 +1,5 @@
+import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
+import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:dayush_clinic/utils/validation_helper.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
@@ -5,14 +7,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class PatientInfoView extends StatelessWidget {
-  PatientInfoView({super.key});
+class PatientInfoView extends StatefulWidget {
+  const PatientInfoView({super.key});
 
+  @override
+  State<PatientInfoView> createState() => _PatientInfoViewState();
+}
+
+class _PatientInfoViewState extends State<PatientInfoView> {
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final TextEditingController namecontroller = TextEditingController();
   final TextEditingController agecontroller = TextEditingController();
   final TextEditingController phonenumcontroller = TextEditingController();
   final TextEditingController descriptioncontroller = TextEditingController();
+  bool checkBoxValue = false;
+  final ProfileController profileController = Get.put(ProfileController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    profileController.getUserProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +41,62 @@ class PatientInfoView extends StatelessWidget {
           padding: EdgeInsets.only(left: 20, right: 20, top: 20).r,
           child: ListView(
             children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.info,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(width: 5.w),
+                  Expanded(
+                    child: Text(
+                      'This patient information will be used for the prescription.',
+                      style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                    ),
+                  )
+                ],
+              ),
+              Constants().h10,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Transform.scale(
+                    scale: 1.2,
+                    child: Checkbox(
+                      value: checkBoxValue,
+                      onChanged: (value) {
+                        setState(() {
+                          checkBoxValue = value ?? false;
+                          if (checkBoxValue == true) {
+                            namecontroller.text =
+                                profileController.username.value;
+                            phonenumcontroller.text =
+                                profileController.phonenum.value;
+                          } else {
+                            namecontroller.clear();
+                            phonenumcontroller.clear();
+                          }
+                        });
+                      },
+                      activeColor: Constants.buttoncolor,
+                      checkColor: Colors.white,
+                      side: BorderSide(
+                        color: Colors.grey,
+                        width: 1,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Same as Profile Information',
+                    style: TextStyle(color: Colors.black, fontSize: 12.sp),
+                  )
+                ],
+              ),
+              Constants().h10,
               formHeadingTile('Patient Name'),
               SizedBox(height: 5.h),
               CommonWidgets().commonTextfield(
@@ -61,15 +133,28 @@ class PatientInfoView extends StatelessWidget {
                   ),
                   hintText: 'Enter Patient Phone Number'),
               SizedBox(height: 20.h),
-              formHeadingTile('Desease Description'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'Disease Description',
+                    style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black),
+                  ),
+                  Text(
+                    ' (Optional)',
+                    style: TextStyle(color: Colors.black, fontSize: 12.sp),
+                  )
+                ],
+              ),
               SizedBox(height: 5.h),
               CommonWidgets().commonTextfield(
                   textController: descriptioncontroller,
-                  validator: (p0) =>
-                      ValidationHelper.normalValidation(p0 ?? ''),
                   keyboardtype: TextInputType.text,
                   maxLines: 4,
-                  hintText: 'Enter Patient Desease Description'),
+                  hintText: 'Enter patient disease description'),
             ],
           ),
         ),
@@ -78,7 +163,7 @@ class PatientInfoView extends StatelessWidget {
         padding: EdgeInsets.only(left: 20, right: 20, bottom: 20).r,
         child: CommonWidgets().commonbutton(
           title: Text(
-            'Submit',
+            'Continue',
             style: TextStyle(
               color: Colors.white,
               fontSize: 12.sp,

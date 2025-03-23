@@ -1,0 +1,2 @@
+C:/Users/akhil/dayush/dayush_clinic/android/app/.cxx/RelWithDebInfo/4x246626/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/akhil/dayush/dayush_clinic/android/app/.cxx/RelWithDebInfo/4x246626/x86_64/CMakeFiles/rebuild_cache.dir

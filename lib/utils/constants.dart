@@ -1,3 +1,4 @@
+import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +7,7 @@ import 'package:get/get.dart';
 class Constants {
   static const buttoncolor = Color(0xFF0D6D2E);
   SizedBox h10 = SizedBox(height: 10.h);
-  Drawer appDrawer(BuildContext context) {
+  Drawer appDrawer(BuildContext context, ProfileController profilecontroller) {
     return Drawer(
       width: MediaQuery.of(context).size.width / 1.5,
       backgroundColor: Colors.white,
@@ -32,12 +33,14 @@ class Constants {
                 ),
               ),
             ),
-            Text(
-              'Hi Veeru',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600),
+            Obx(
+              () => Text(
+                'Hi ${profilecontroller.username.value}',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600),
+              ),
             ),
             Constants().h10,
             _buildMenuItem(
@@ -59,7 +62,7 @@ class Constants {
               icon: Icons.logout_rounded,
               title: 'Logout',
               color: Colors.red,
-              ontap: () => Get.toNamed(PageRoutes.login),
+              ontap: () => Get.offAllNamed(PageRoutes.login),
             ),
           ],
         ),

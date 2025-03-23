@@ -13,9 +13,9 @@ import 'package:get/get.dart';
 
 class Authcontroller extends GetxController {
   Rx<bool> isPhoneSelected = true.obs;
-  Rx<bool> isLoading = false.obs;
-  Rx<bool> isobscured = false.obs;
-  Rx<bool> isobscuredForConfirm = false.obs;
+  Rx<bool> isLoading = true.obs;
+  Rx<bool> isobscured = true.obs;
+  Rx<bool> isobscuredForConfirm = true.obs;
   var countdown = 300.obs;
 
   void startTimer() {
@@ -135,6 +135,8 @@ class Authcontroller extends GetxController {
       isLoading.value = false;
       log("Exception: $e");
       return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -177,6 +179,8 @@ class Authcontroller extends GetxController {
         CommonWidgets()
             .snackBarinfo("An error occurred. Please check your connection."),
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -220,6 +224,8 @@ class Authcontroller extends GetxController {
       }
     } catch (e) {
       log("Exception : $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -240,7 +246,8 @@ class Authcontroller extends GetxController {
                 "OTP verified. You can now reset your password.") {
           // ✅ Navigate to login screen on successful activation
           isLoading.value = false;
-          Get.toNamed(PageRoutes.createnewpassword);
+          Get.toNamed(PageRoutes.createnewpassword,
+              arguments: {'email': officialMailId});
         } else {
           // ❌ Show error message if OTP is invalid or another issue occurs
           isLoading.value = false;
@@ -263,32 +270,38 @@ class Authcontroller extends GetxController {
         CommonWidgets()
             .snackBarinfo("An error occurred. Please check your connection."),
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  Future<void> forgetResetPassword(
-      String password, String confirmpassword, BuildContext context) async {
+  Future<void> forgetResetPassword(String email, String password,
+      String confirmpassword, BuildContext context) async {
     try {
       isLoading.value = true;
       final response = await DioHandler.dioPOSTNoAuth(
-        endpoint: 'accounts/forgot-pass-otp/',
-        body: json.encode({'email': password, 'otp': confirmpassword}),
+        endpoint: 'accounts/reset-password/',
+        body: json.encode({
+          'email': email,
+          'new_password': password,
+          'confirm_password': confirmpassword
+        }),
       );
 
       if (response != null) {
         log(jsonEncode(response));
 
         if (response.containsKey("message") &&
-            response["message"] ==
-                "OTP verified. You can now reset your password.") {
+            response["message"] == "Password reset successfully.") {
           // ✅ Navigate to login screen on successful activation
           isLoading.value = false;
-          Get.toNamed(PageRoutes.createnewpassword);
+          Get.toNamed(PageRoutes.login);
         } else {
           // ❌ Show error message if OTP is invalid or another issue occurs
           isLoading.value = false;
           ScaffoldMessenger.of(context).showSnackBar(
-            CommonWidgets().snackBarinfo(response["message"] ?? "Invalid OTP."),
+            CommonWidgets()
+                .snackBarinfo(response["message"] ?? "Something went wrong."),
           );
         }
       } else {
@@ -306,6 +319,8 @@ class Authcontroller extends GetxController {
         CommonWidgets()
             .snackBarinfo("An error occurred. Please check your connection."),
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 }

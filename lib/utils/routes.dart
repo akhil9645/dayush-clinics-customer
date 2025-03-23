@@ -5,7 +5,9 @@ import 'package:dayush_clinic/views/authpages/signup_page.dart';
 import 'package:dayush_clinic/views/bookappointment/book_appointment.dart';
 import 'package:dayush_clinic/views/categorydetail/categorydetailpage.dart';
 import 'package:dayush_clinic/views/categorydetail/widget/patient_info_view.dart';
+import 'package:dayush_clinic/views/homepage/homepage.dart';
 import 'package:dayush_clinic/views/mainpage.dart';
+import 'package:dayush_clinic/views/scheduledappointmentspage/scheduledappointmentspage.dart';
 import 'package:dayush_clinic/views/splashscreen/splashscreendialogue.dart';
 import 'package:dayush_clinic/views/videocall/videocallmain.dart';
 import 'package:get/get.dart';
@@ -15,7 +17,6 @@ class PageRoutes {
   static const login = '/login';
   static const signup = '/signup';
   static const forgetpassword = '/forgetpassword';
-
   static const createnewpassword = '/createnewpassword';
   static const termsandconditions = '/termsandconditions';
   static const homepage = '/homepage';
@@ -25,12 +26,19 @@ class PageRoutes {
   static const bookappointment = '/bookappointment';
   static const verifyOtp = '/verifyOtp';
   static const patientInfo = '/patientInfo';
+  static const consultationHistory = '/consultationHistory';
 }
 
 List<GetPage<dynamic>> getpages = [
   GetPage(
     name: PageRoutes.splashscreendialogue,
     page: () => Splashscreendialogue(),
+    transition: Transition.cupertino,
+    transitionDuration: Duration(milliseconds: 200),
+  ),
+  GetPage(
+    name: PageRoutes.homepage,
+    page: () => Homepage(),
     transition: Transition.cupertino,
     transitionDuration: Duration(milliseconds: 200),
   ),
@@ -82,6 +90,11 @@ List<GetPage<dynamic>> getpages = [
   GetPage(
       name: PageRoutes.patientInfo,
       page: () => PatientInfoView(),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 200)),
+  GetPage(
+      name: PageRoutes.consultationHistory,
+      page: () => ConsultationHistoryTab(),
       transition: Transition.cupertino,
       transitionDuration: Duration(milliseconds: 200)),
 ];

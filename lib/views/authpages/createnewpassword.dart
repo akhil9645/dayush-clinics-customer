@@ -8,7 +8,9 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Createnewpassword extends StatelessWidget {
-  Createnewpassword({super.key});
+  Createnewpassword({super.key}) : arguments = Get.arguments;
+
+  final dynamic arguments;
 
   final TextEditingController passwordcontroller = TextEditingController();
   final TextEditingController confirmpasswordcontroller =
@@ -18,6 +20,7 @@ class Createnewpassword extends StatelessWidget {
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final String email = arguments?['email'] ?? '';
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CommonWidgets().commonappbar(''),
@@ -99,8 +102,11 @@ class Createnewpassword extends StatelessWidget {
               CommonWidgets().commonbutton(
                 ontap: () async {
                   if (formkey.currentState!.validate()) {
-                    authcontroller.forgetResetPassword(passwordcontroller.text,
-                        confirmpasswordcontroller.text, context);
+                    authcontroller.forgetResetPassword(
+                        email,
+                        passwordcontroller.text,
+                        confirmpasswordcontroller.text,
+                        context);
                   }
                 },
                 title: authcontroller.isLoading.value

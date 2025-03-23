@@ -5,8 +5,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 const appId = "77022c24fc4048ecb34131448fd7dbc9";
 const token =
-    "007eJxTYGhu8j8ZdeKP9f3O2Z8eOajwZBpHufLw//2RNSn9bUzjxE0KDObmBkZGyUYmackmBiYWqclJxiaGxoYmJhZpKeYpScmWix7lpTcEMjI86uliYIRCEF+UISWxsrQ4IzknMy8zuSwzJTU/OTEnh4EBAB0VKAc=";
-const channel = "dayushclinicvideocall";
+    "007eJxTYEjg1pq7I+XkzL3HfypNfnT7jLDDu5+Vd0PXzn/1ivvt8b9HFRjMzQ2MjJKNTNKSTQxMLFKTk4xNDI0NTUws0lLMU5KSLcue3k9vCGRkOP3EmImRAQJBfHaGktTiksy8dAYGABWGJfE=";
+const channel = "testing";
 
 class Videocallmain extends StatefulWidget {
   const Videocallmain({super.key});

@@ -16,7 +16,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final Homecontroller homecontroller = Get.put(Homecontroller());
-  final ProfileController profileController = Get.find<ProfileController>();
+  final ProfileController profileController = Get.put(ProfileController());
 
   final TextEditingController searchcontroller = TextEditingController();
 
@@ -35,13 +35,14 @@ class _HomepageState extends State<Homepage> {
     // TODO: implement initState
     super.initState();
     homecontroller.getAllCategories();
+    profileController.getUserProfile();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafoldkey,
-      drawer: Constants().appDrawer(context),
+      drawer: Constants().appDrawer(context, profileController),
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -92,12 +93,14 @@ class _HomepageState extends State<Homepage> {
         padding: const EdgeInsets.only(left: 20, right: 20, top: 20).r,
         child: ListView(
           children: [
-            Text(
-              'Hi ${profileController.username}',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600),
+            Obx(
+              () => Text(
+                'Hi ${profileController.username}',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600),
+              ),
             ),
             Text(
               'What are you looking for?',
@@ -180,7 +183,14 @@ class _HomepageState extends State<Homepage> {
                 },
               ),
             ),
-            // Constants().h10,
+            Constants().h10,
+            Constants().h10,
+            _buildMenuItem(
+              icon: Icons.history,
+              title: 'Consultation History',
+              color: Color(0xFF0B6B3D),
+              ontap: () => Get.toNamed(PageRoutes.consultationHistory),
+            ),
             // Text(
             //   'Activities',
             //   style: TextStyle(
@@ -258,6 +268,39 @@ class _HomepageState extends State<Homepage> {
             // )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(
+      {required IconData icon,
+      required String title,
+      required Color color,
+      Function()? ontap}) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16).r,
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12).r,
+      ),
+      child: ListTile(
+        leading: Container(
+          padding: EdgeInsets.all(8).r,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: Icon(Icons.chevron_right, color: Colors.grey),
+        onTap: ontap,
       ),
     );
   }

@@ -18,6 +18,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    authcontroller.isLoading.value = false;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Form(

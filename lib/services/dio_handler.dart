@@ -3,7 +3,7 @@ import 'package:dayush_clinic/services/tokenstorage_Service.dart';
 import 'package:dio/dio.dart';
 
 class DioHandler {
-  static const baseUrl = 'https://ced5-59-93-230-18.ngrok-free.app/';
+  static const baseUrl = 'https://84ee-59-93-230-18.ngrok-free.app/';
   static Dio dio = Dio(BaseOptions(
     validateStatus: (status) {
       if (status == 401) {

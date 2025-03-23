@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
   RxString username = ''.obs;
+  RxString phonenum = ''.obs;
   getUserProfile() async {
     try {
       var response =
@@ -14,6 +15,7 @@ class ProfileController extends GetxController {
         Map<String, dynamic> user = response['user'];
 
         username.value = user['username'] ?? '';
+        phonenum.value = user['phone_number'] ?? '';
       } else {
         log("Invalid response format");
       }

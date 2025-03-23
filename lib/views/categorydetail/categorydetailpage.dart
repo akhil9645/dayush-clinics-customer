@@ -29,31 +29,42 @@ class _CategorydetailpageState extends State<Categorydetailpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            'Category Detail',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.white,
-          forceMaterialTransparency: true,
-          elevation: 0,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 10).r,
-            child: IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(Icons.arrow_back_ios_new_rounded)),
-          ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Category Detail',
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold),
         ),
-        body: CategoryTab(
-            category: 'Ayurveda',
-            imageUrl: 'assets/images/2195c1d242926995266846621b834170.png'));
+        backgroundColor: Colors.white,
+        forceMaterialTransparency: true,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10).r,
+          child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(Icons.arrow_back_ios_new_rounded)),
+        ),
+      ),
+      body: Obx(
+        () => doctorCategoryController.doctorsList.isNotEmpty
+            ? CategoryTab(
+                category: 'Ayurveda',
+                imageUrl: 'assets/images/2195c1d242926995266846621b834170.png')
+            : Center(
+                child: Text(
+                  'No doctors available for the selected category.',
+                  style:
+                      TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+                ),
+              ),
+      ),
+    );
   }
 }
 
