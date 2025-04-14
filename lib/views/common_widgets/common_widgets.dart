@@ -8,12 +8,14 @@ class CommonWidgets {
       {required Widget? title,
       required void Function()? ontap,
       int fontsize = 12,
+      Color buttonColor = Constants.buttoncolor,
       double buttonwidth = double.infinity,
       double buttonheight = 30}) {
     return ElevatedButton(
         onPressed: ontap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Constants.buttoncolor,
+          padding: EdgeInsets.zero,
+          backgroundColor: buttonColor,
           minimumSize: Size(buttonwidth.w, buttonheight.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8).r,

@@ -5,7 +5,6 @@ import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -110,8 +109,8 @@ class SignupPage extends StatelessWidget {
                     suffixIcon: IconButton(
                       icon: Icon(
                         authcontroller.isobscured.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                         color: Colors.grey,
                         size: 20.w,
                       ),
@@ -135,8 +134,8 @@ class SignupPage extends StatelessWidget {
                     suffixIcon: IconButton(
                       icon: Icon(
                         authcontroller.isobscuredForConfirm.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                         color: Colors.grey,
                         size: 20.w,
                       ),

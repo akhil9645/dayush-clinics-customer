@@ -123,6 +123,7 @@ class Authcontroller extends GetxController {
         log("Login Success: ${response.toString()}");
         isLoading.value = false;
         await TokenStorageService().storeToken(response['access']);
+        await TokenStorageService().storeRefreshToken(response['refresh']);
         return true;
       } else {
         log("Login Failed: ${response.toString()}");

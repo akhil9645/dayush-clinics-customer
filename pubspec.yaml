@@ -22,6 +22,7 @@ dependencies:
   permission_handler: ^11.0.1
   flutter_secure_storage: ^9.2.4
   intl:
+  table_calendar: 
 
 dev_dependencies:
   flutter_test:

@@ -2,12 +2,15 @@ import 'package:dayush_clinic/controller/appcontroller.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:dayush_clinic/views/splashscreen/splashscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyApp());
 }
 

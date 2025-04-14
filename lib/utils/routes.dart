@@ -3,10 +3,11 @@ import 'package:dayush_clinic/views/authpages/forgetpassword.dart';
 import 'package:dayush_clinic/views/authpages/login_page.dart';
 import 'package:dayush_clinic/views/authpages/signup_page.dart';
 import 'package:dayush_clinic/views/bookappointment/book_appointment.dart';
+import 'package:dayush_clinic/views/bookappointment/payment_detail.dart';
 import 'package:dayush_clinic/views/categorydetail/categorydetailpage.dart';
 import 'package:dayush_clinic/views/categorydetail/widget/patient_info_view.dart';
 import 'package:dayush_clinic/views/homepage/homepage.dart';
-import 'package:dayush_clinic/views/mainpage.dart';
+import 'package:dayush_clinic/views/profilepage/profile_screen.dart';
 import 'package:dayush_clinic/views/scheduledappointmentspage/scheduledappointmentspage.dart';
 import 'package:dayush_clinic/views/splashscreen/splashscreendialogue.dart';
 import 'package:dayush_clinic/views/videocall/videocallmain.dart';
@@ -21,12 +22,14 @@ class PageRoutes {
   static const termsandconditions = '/termsandconditions';
   static const homepage = '/homepage';
   static const videocallmainpage = '/videocallmainpage';
-  static const mainpage = '/mainpage';
   static const categorydetailpage = '/categorydetailpage';
   static const bookappointment = '/bookappointment';
   static const verifyOtp = '/verifyOtp';
   static const patientInfo = '/patientInfo';
   static const consultationHistory = '/consultationHistory';
+  static const profile = '/profile';
+  static const paymentDetail = '/paymentDetail';
+  static const scheduledAppointment = '/scheduleAppointment';
 }
 
 List<GetPage<dynamic>> getpages = [
@@ -73,11 +76,6 @@ List<GetPage<dynamic>> getpages = [
     transitionDuration: Duration(milliseconds: 200),
   ),
   GetPage(
-      name: PageRoutes.mainpage,
-      page: () => Mainpage(),
-      transition: Transition.cupertino,
-      transitionDuration: Duration(milliseconds: 200)),
-  GetPage(
       name: PageRoutes.categorydetailpage,
       page: () => Categorydetailpage(),
       transition: Transition.cupertino,
@@ -93,8 +91,18 @@ List<GetPage<dynamic>> getpages = [
       transition: Transition.cupertino,
       transitionDuration: Duration(milliseconds: 200)),
   GetPage(
-      name: PageRoutes.consultationHistory,
-      page: () => ConsultationHistoryTab(),
+      name: PageRoutes.profile,
+      page: () => ProfileScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 200)),
+  GetPage(
+      name: PageRoutes.paymentDetail,
+      page: () => PaymentDetail(),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 200)),
+  GetPage(
+      name: PageRoutes.scheduledAppointment,
+      page: () => Scheduledappointmentspage(),
       transition: Transition.cupertino,
       transitionDuration: Duration(milliseconds: 200)),
 ];

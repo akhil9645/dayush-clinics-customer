@@ -1,4 +1,5 @@
 import 'package:dayush_clinic/controller/doctor_category_controller/doctor_category_controller.dart';
+import 'package:dayush_clinic/controller/homecontroller/homecontroller.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
@@ -16,53 +17,120 @@ class Categorydetailpage extends StatefulWidget {
 class _CategorydetailpageState extends State<Categorydetailpage> {
   final DoctorCategoryController doctorCategoryController =
       Get.put(DoctorCategoryController());
-  late String categoryId;
+  final Homecontroller homecontroller = Get.find<Homecontroller>();
+
+  String? selectedTab;
 
   @override
   void initState() {
     super.initState();
-    categoryId = Get.arguments['categoryId'].toString();
-    doctorCategoryController.getAvailableCategoryDoctors(
-        categoryId: categoryId);
+    homecontroller.getAllCategories().then((_) {
+      if (homecontroller.categories.isNotEmpty) {
+        final firstCategory = homecontroller.categories[0];
+        selectedTab = firstCategory['name'];
+        doctorCategoryController.getAvailableCategoryDoctors(
+          categoryId: firstCategory['id'].toString(),
+        );
+        setState(() {}); // trigger UI update after setting selectedTab
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Category Detail',
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold),
-        ),
         backgroundColor: Colors.white,
-        forceMaterialTransparency: true,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 10).r,
-          child: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(Icons.arrow_back_ios_new_rounded)),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            selectedTab ?? '',
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.white,
+          forceMaterialTransparency: true,
+          elevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 10).r,
+            child: IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(Icons.arrow_back_ios_new_rounded)),
+          ),
         ),
-      ),
-      body: Obx(
-        () => doctorCategoryController.doctorsList.isNotEmpty
-            ? CategoryTab(
-                category: 'Ayurveda',
-                imageUrl: 'assets/images/2195c1d242926995266846621b834170.png')
-            : Center(
-                child: Text(
-                  'No doctors available for the selected category.',
-                  style:
-                      TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-                ),
+        body: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20).r,
+          child: Column(
+            children: [
+              Obx(
+                () => homecontroller.categories.isEmpty
+                    ? SizedBox()
+                    : SizedBox(
+                        height: 40.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: homecontroller.categories.length,
+                          itemBuilder: (context, index) {
+                            final category = homecontroller.categories[index];
+                            return Padding(
+                              padding: EdgeInsets.only(right: 12.w),
+                              child: _buildTab(
+                                  category['name'], category['id'].toString()),
+                            );
+                          },
+                        ),
+                      ),
               ),
+              Obx(
+                () => doctorCategoryController.doctorsList.isNotEmpty
+                    ? CategoryTab(
+                        category: selectedTab ?? '',
+                        imageUrl:
+                            'assets/images/2195c1d242926995266846621b834170.png')
+                    : Expanded(
+                        child: Center(
+                          child: Text(
+                            'No doctors available for the selected category.',
+                            style: TextStyle(
+                                fontSize: 14.sp, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  Widget _buildTab(String title, String categoryId) {
+    final isSelected = selectedTab == title;
+    return GestureDetector(
+      onTap: () async {
+        setState(() {
+          selectedTab = title;
+        });
+        doctorCategoryController.getAvailableCategoryDoctors(
+            categoryId: categoryId);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16).r,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isSelected ? Colors.transparent : Colors.grey.shade300,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          color: isSelected ? Constants.buttoncolor : Colors.white,
+        ),
+        child: Center(
+          child: Text(title,
+              style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600)),
+        ),
       ),
     );
   }
@@ -83,12 +151,12 @@ class CategoryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 20).r,
+    return Expanded(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 15.h),
             AspectRatio(
               aspectRatio: 16 / 9,
               child: ClipRRect(
@@ -101,41 +169,35 @@ class CategoryTab extends StatelessWidget {
             ),
 
             // Recommended Doctors Section
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Constants().h10,
-                Text(
-                  'Available Doctors',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Obx(
-                  () => doctorCategoryController.doctorsList.isNotEmpty
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount:
-                              doctorCategoryController.doctorsList.length,
-                          itemBuilder: (context, index) {
-                            var doctor =
-                                doctorCategoryController.doctorsList[index];
-                            return DoctorCard(
-                              experience: doctor['user']
-                                      ['years_of_experience'] ??
-                                  'N/A',
-                              name: '${doctor['user']['username']}s',
-                            );
-                          },
-                        )
-                      : Center(
-                          child: Text('Doctor List is Empty'),
-                        ),
-                ),
-              ],
+            Constants().h10,
+            Text(
+              'Available Doctors',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            Obx(
+              () => doctorCategoryController.doctorsList.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: doctorCategoryController.doctorsList.length,
+                      itemBuilder: (context, index) {
+                        var doctor =
+                            doctorCategoryController.doctorsList[index];
+                        return DoctorCard(
+                          experience: doctor['years_of_experience'] ?? 'N/A',
+                          name: '${doctor['user']['username']}s',
+                          isAvaialble: true,
+                          doctorDetail: doctor,
+                        );
+                      },
+                    )
+                  : Center(
+                      child: Text('Doctor List is Empty'),
+                    ),
             ),
           ],
         ),
@@ -147,8 +209,14 @@ class CategoryTab extends StatelessWidget {
 class DoctorCard extends StatelessWidget {
   String? name;
   String? experience;
-
-  DoctorCard({super.key, this.experience, this.name});
+  bool? isAvaialble = true;
+  dynamic doctorDetail;
+  DoctorCard(
+      {super.key,
+      this.experience,
+      this.name,
+      this.isAvaialble,
+      this.doctorDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -222,21 +290,51 @@ class DoctorCard extends StatelessWidget {
                       Spacer(),
                     ],
                   ),
-                  CommonWidgets().commonbutton(
-                    buttonheight: 20,
-                    fontsize: 8,
-                    buttonwidth: 50,
-                    title: Text(
-                      'Consult Now',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CommonWidgets().commonbutton(
+                        buttonheight: 20,
+                        fontsize: 8,
+                        buttonwidth: 100,
+                        title: Text(
+                          'Book Appointment',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ontap: () {
+                          Get.toNamed(PageRoutes.patientInfo, arguments: {
+                            'from': 'booknow',
+                            'doctor': doctorDetail
+                          });
+                        },
                       ),
-                    ),
-                    ontap: () {
-                      Get.toNamed(PageRoutes.patientInfo);
-                    },
+                      SizedBox(width: 5.w),
+                      isAvaialble!
+                          ? CommonWidgets().commonbutton(
+                              buttonheight: 20,
+                              fontsize: 8,
+                              buttonwidth: 100,
+                              title: Text(
+                                'Consult Now',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              ontap: () {
+                                Get.toNamed(PageRoutes.patientInfo, arguments: {
+                                  'from': 'consultnow',
+                                  'doctor': doctorDetail
+                                });
+                              },
+                            )
+                          : SizedBox()
+                    ],
                   )
                 ],
               ),

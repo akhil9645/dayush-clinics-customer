@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:dayush_clinic/services/dio_handler.dart';
+import 'package:dayush_clinic/services/tokenstorage_Service.dart';
+import 'package:dayush_clinic/utils/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
@@ -21,6 +24,27 @@ class ProfileController extends GetxController {
       }
     } catch (e) {
       log("Exception: $e");
+    }
+  }
+
+  userLogout(BuildContext context) async {
+    try {
+      var response =
+          await DioHandler.dioPOSTWithAuth(endpoint: 'accounts/logout/');
+      if (response != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Logout successful.'),
+          ),
+        );
+        await TokenStorageService().deleteToken();
+        Get.offAllNamed(PageRoutes.login);
+      } else {}
+    } catch (e) {
+      log("Exception : $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Logout failed. Please try again.')),
+      );
     }
   }
 }

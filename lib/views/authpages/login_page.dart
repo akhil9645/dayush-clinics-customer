@@ -67,8 +67,8 @@ class LoginPage extends StatelessWidget {
                   suffixIcon: IconButton(
                     icon: Icon(
                       authcontroller.isobscured.value
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       color: Colors.grey,
                       size: 20.w,
                     ),
@@ -90,7 +90,7 @@ class LoginPage extends StatelessWidget {
                     Get.toNamed(PageRoutes.forgetpassword);
                   },
                   child: const Text(
-                    'Forgot?',
+                    'Forgot Password?',
                     style: TextStyle(
                         color: Constants.buttoncolor,
                         fontWeight: FontWeight.w600),
@@ -120,7 +120,7 @@ class LoginPage extends StatelessWidget {
                           passwordcontroller.text,
                           context);
                       if (status == true) {
-                        Get.toNamed(PageRoutes.mainpage);
+                        Get.toNamed(PageRoutes.homepage);
                       }
                     }
                   },

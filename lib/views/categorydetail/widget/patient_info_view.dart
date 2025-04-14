@@ -8,7 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class PatientInfoView extends StatefulWidget {
-  const PatientInfoView({super.key});
+  final dynamic arguments;
+  PatientInfoView({super.key}) : arguments = Get.arguments;
 
   @override
   State<PatientInfoView> createState() => _PatientInfoViewState();
@@ -22,12 +23,14 @@ class _PatientInfoViewState extends State<PatientInfoView> {
   final TextEditingController descriptioncontroller = TextEditingController();
   bool checkBoxValue = false;
   final ProfileController profileController = Get.put(ProfileController());
+  Map<String, dynamic>? data;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     profileController.getUserProfile();
+    data = data = widget.arguments as Map<String, dynamic>;
   }
 
   @override
@@ -172,7 +175,10 @@ class _PatientInfoViewState extends State<PatientInfoView> {
           ),
           ontap: () {
             if (formkey.currentState!.validate()) {
-              Get.toNamed(PageRoutes.bookappointment);
+              Get.toNamed(PageRoutes.bookappointment, arguments: {
+                'from': data?['from'],
+                'doctor': data?['doctor']
+              });
             }
           },
         ),

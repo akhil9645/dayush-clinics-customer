@@ -1,7 +1,10 @@
 import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
+import 'package:dayush_clinic/utils/routes.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -86,24 +89,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.history,
                       title: 'Consultation History',
                       color: Color(0xFF0B6B3D),
+                      ontap: () => Get.toNamed(PageRoutes.consultationHistory),
                     ),
-                    // _buildMenuItem(
-                    //   icon: Icons.calendar_today,
-                    //   title: 'Scheduled Appointments',
-                    //   color: Color(0xFF0B6B3D),
-                    // ),
-                    // _buildMenuItem(
-                    //   icon: Icons.payment,
-                    //   title: 'Payment Method',
-                    //   color: Color(0xFF0B6B3D),
-                    // ),
+                    _buildMenuItem(
+                      icon: Icons.calendar_today,
+                      title: 'Scheduled Appointments',
+                      ontap: () => Get.toNamed(PageRoutes.scheduledAppointment),
+                      color: Color(0xFF0B6B3D),
+                    ),
                     _buildMenuItem(
                       icon: Icons.question_answer,
                       title: 'FAQs',
+                      ontap: () {},
                       color: Color(0xFF0B6B3D),
                     ),
                     _buildMenuItem(
                       icon: Icons.logout,
+                      ontap: () {
+                        showSuccessDialog(context, 'assets/svg/logout_icon.svg',
+                            buttonTitle: 'Logout', ontap: () {
+                          profileController.userLogout(context);
+                        }, title: 'Are you sure to log out of your account?');
+                      },
                       title: 'Logout',
                       color: Colors.red,
                     ),
@@ -117,11 +124,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required Color color,
-  }) {
+  Widget _buildMenuItem(
+      {required IconData icon,
+      required String title,
+      required Color color,
+      required Function()? ontap}) {
     return Container(
       margin: EdgeInsets.only(bottom: 16).r,
       decoration: BoxDecoration(
@@ -145,8 +152,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         trailing: Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: () {},
+        onTap: ontap,
       ),
+    );
+  }
+
+  void showSuccessDialog(BuildContext context, String? iconPath,
+      {String? title, String? buttonTitle, Function()? ontap}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12).r,
+          ),
+          content: Container(
+            width: 284.w,
+            height: 280.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12).r,
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 20.h),
+                SvgPicture.asset(
+                  iconPath ?? "",
+                  width: 61.w,
+                  height: 61.h,
+                ),
+                SizedBox(height: 20.h),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    title ?? '',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CommonWidgets().commonbutton(
+                    title: Text(
+                      buttonTitle ?? '',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    ontap: ontap,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CommonWidgets().commonbutton(
+                    buttonColor: Colors.grey.shade100,
+                    title: Text(
+                      'Cancel',
+                      style: TextStyle(
+                          color: Constants.buttoncolor,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    ontap: () => Get.back(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -9,7 +9,7 @@ class DoctorCategoryController extends GetxController {
   getAvailableCategoryDoctors({String? categoryId}) async {
     try {
       var response = await DioHandler.dioGETWithAuth(
-          endpoint: 'doctor/categories/$categoryId/doctors/');
+          endpoint: 'doctor/categories/$categoryId/doctors/?all=true');
 
       if (response != null && response is Map<String, dynamic>) {
         if (response.containsKey('doctors')) {

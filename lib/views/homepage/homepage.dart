@@ -2,13 +2,14 @@ import 'package:dayush_clinic/controller/homecontroller/homecontroller.dart';
 import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class Homepage extends StatefulWidget {
-  Homepage({super.key});
+  const Homepage({super.key});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -17,8 +18,6 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final Homecontroller homecontroller = Get.put(Homecontroller());
   final ProfileController profileController = Get.put(ProfileController());
-
-  final TextEditingController searchcontroller = TextEditingController();
 
   final categoryimages = [
     'assets/images/d481906f8802fa20cea665be3998d197.png',
@@ -61,6 +60,16 @@ class _HomepageState extends State<Homepage> {
                     Icons.notifications,
                     size: 20.w,
                   )),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 15.r),
+            child: GestureDetector(
+              onTap: () => Get.toNamed(PageRoutes.profile),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundColor: Colors.green,
+              ),
             ),
           )
         ],
@@ -110,27 +119,6 @@ class _HomepageState extends State<Homepage> {
               ),
             ),
             Constants().h10,
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(color: Colors.grey),
-              ),
-              child: TextFormField(
-                controller: searchcontroller,
-                cursorColor: Constants.buttoncolor,
-                decoration: InputDecoration(
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.all(12).w,
-                  hintText: 'Doctors, Appointments, Ayurveda, etc..',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-            ),
             Constants().h10,
             Text(
               'Select Category',
@@ -147,160 +135,143 @@ class _HomepageState extends State<Homepage> {
                 physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 1,
+                  childAspectRatio: 0.9,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
                 itemBuilder: (context, index) {
                   var data = homecontroller.categories[index];
-                  return GestureDetector(
-                    onTap: () => Get.toNamed(PageRoutes.categorydetailpage,
-                        arguments: {'categoryId': data['id']}),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Constants.buttoncolor,
-                          borderRadius: BorderRadius.circular(10.r)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 5.r),
-                          CircleAvatar(
-                            radius: 24.r,
-                            backgroundImage: AssetImage(categoryimages[index]),
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: Constants.buttoncolor,
+                        borderRadius: BorderRadius.circular(10.r)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 5.r),
+                        CircleAvatar(
+                          radius: 24.r,
+                          backgroundImage: AssetImage(categoryimages[index]),
+                        ),
+                        SizedBox(height: 5.r),
+                        Text(
+                          data['name'],
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.sp),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () =>
+                                Get.toNamed(PageRoutes.categorydetailpage),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12).r),
+                              child: Center(
+                                child: Text(
+                                  'Consult Now',
+                                  style: TextStyle(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
                           ),
-                          SizedBox(height: 5.r),
-                          Text(
-                            data['name'],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12.sp),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },
               ),
             ),
             Constants().h10,
-            Constants().h10,
-            _buildMenuItem(
-              icon: Icons.history,
-              title: 'Consultation History',
-              color: Color(0xFF0B6B3D),
-              ontap: () => Get.toNamed(PageRoutes.consultationHistory),
+            Text(
+              'Activities',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600),
             ),
-            // Text(
-            //   'Activities',
-            //   style: TextStyle(
-            //       color: Colors.black,
-            //       fontSize: 18.sp,
-            //       fontWeight: FontWeight.w600),
-            // ),
-            // Constants().h10,
-            // ListView.builder(
-            //   itemCount: 2,
-            //   shrinkWrap: true,
-            //   physics: BouncingScrollPhysics(),
-            //   padding: EdgeInsets.zero,
-            //   itemBuilder: (context, index) {
-            //     var images = [
-            //       'assets/images/0e4da77312f3cdaf1fb4ca76413499dc.png',
-            //       'assets/images/2195c1d242926995266846621b834170.png'
-            //     ];
-            //     var titles = ['Daily Live Yoga Classes', '1-Day workshop'];
-            //     var subtitle = ['Morning-6.30-7.30 Am', 'Benefits of Ayurveda'];
-            //     var text = ['Evening-6.30-7.30 Pm', 'Morning-6.30-7.30 Am'];
-            //     return Padding(
-            //       padding: const EdgeInsets.only(bottom: 10).r,
-            //       child: Container(
-            //         decoration: BoxDecoration(
-            //           border: Border.all(
-            //             color: Colors.grey,
-            //           ),
-            //           borderRadius: BorderRadius.circular(10.r),
-            //         ),
-            //         child: Padding(
-            //           padding: const EdgeInsets.all(10.0).r,
-            //           child: Row(
-            //             children: [
-            //               SizedBox(
-            //                 width: 100.w,
-            //                 height: 100.h,
-            //                 child: ClipRRect(
-            //                   borderRadius: BorderRadius.circular(10.r),
-            //                   child: Image.asset(
-            //                     images[index],
-            //                     fit: BoxFit.fitHeight,
-            //                   ),
-            //                 ),
-            //               ),
-            //               SizedBox(width: 10.w),
-            //               Column(
-            //                 crossAxisAlignment: CrossAxisAlignment.start,
-            //                 children: [
-            //                   Text(
-            //                     titles[index],
-            //                     style: TextStyle(
-            //                         color: Colors.black,
-            //                         fontSize: 16.sp,
-            //                         fontWeight: FontWeight.w600),
-            //                   ),
-            //                   Text(
-            //                     subtitle[index],
-            //                     style: TextStyle(
-            //                         color: Colors.grey, fontSize: 12.sp),
-            //                   ),
-            //                   Text(
-            //                     text[index],
-            //                     style: TextStyle(
-            //                         color: Colors.grey, fontSize: 12.sp),
-            //                   ),
-            //                 ],
-            //               )
-            //             ],
-            //           ),
-            //         ),
-            //       ),
-            //     );
-            //   },
-            // )
+            Constants().h10,
+            ListView.builder(
+              itemCount: 2,
+              shrinkWrap: true,
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                var images = [
+                  'assets/images/0e4da77312f3cdaf1fb4ca76413499dc.png',
+                  'assets/images/2195c1d242926995266846621b834170.png'
+                ];
+                var titles = ['Daily Live Yoga Classes', '1-Day workshop'];
+                var subtitle = ['Morning-6.30-7.30 Am', 'Benefits of Ayurveda'];
+                var text = ['Evening-6.30-7.30 Pm', 'Morning-6.30-7.30 Am'];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10).r,
+                  child: GestureDetector(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(CommonWidgets()
+                          .snackBarinfo('This Feature will Coming Soon',
+                              color: Colors.green));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0).r,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 100.w,
+                              height: 100.h,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.r),
+                                child: Image.asset(
+                                  images[index],
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  titles[index],
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  subtitle[index],
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12.sp),
+                                ),
+                                Text(
+                                  text[index],
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12.sp),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            )
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildMenuItem(
-      {required IconData icon,
-      required String title,
-      required Color color,
-      Function()? ontap}) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16).r,
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12).r,
-      ),
-      child: ListTile(
-        leading: Container(
-          padding: EdgeInsets.all(8).r,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: color),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        trailing: Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: ontap,
       ),
     );
   }
