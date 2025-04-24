@@ -25,6 +25,8 @@ class _BookAppointmentState extends State<BookAppointment> {
     // TODO: implement initState
     super.initState();
     data = widget.arguments as Map<String, dynamic>;
+    bookAppointmentController.getAppointMentTimeSlots(
+        doctorId: data?['doctor']['id'].toString());
   }
 
   final List<String> timeSlots = [
@@ -164,6 +166,8 @@ class _BookAppointmentState extends State<BookAppointment> {
                                   selectedDay;
                               bookAppointmentController.focusedDay.value =
                                   focusedDay;
+                              bookAppointmentController
+                                  .filterSlotsBySelectedDate();
                             },
                             onFormatChanged: (format) {
                               bookAppointmentController.calendarFormat.value =
@@ -172,6 +176,10 @@ class _BookAppointmentState extends State<BookAppointment> {
                             onPageChanged: (focusedDay) {
                               bookAppointmentController.focusedDay.value =
                                   focusedDay;
+                            },
+                            enabledDayPredicate: (day) {
+                              return bookAppointmentController
+                                  .isDateAvailable(day);
                             },
                             calendarStyle: CalendarStyle(
                               todayDecoration: BoxDecoration(
@@ -215,52 +223,59 @@ class _BookAppointmentState extends State<BookAppointment> {
                     SizedBox(
                       height: 15.h,
                     ),
-                    Text(
-                      'Select Time Slot on ${DateFormat('dd/MM/yyyy').format(bookAppointmentController.selectedDay.value)}',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.sp),
+                    Obx(
+                      () => Text(
+                        'Select Time Slot on ${DateFormat('dd/MM/yyyy').format(bookAppointmentController.selectedDay.value)}',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.sp),
+                      ),
                     ),
                     SizedBox(
                       height: 15.h,
                     ),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 2.5,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: timeSlots.length,
-                      itemBuilder: (context, index) {
-                        return Obx(() => ElevatedButton(
-                              onPressed: () {
-                                bookAppointmentController
-                                    .selectedTimeSlot.value = timeSlots[index];
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: bookAppointmentController
-                                            .selectedTimeSlot.value ==
-                                        timeSlots[index]
-                                    ? Constants.buttoncolor
-                                    : Colors.white,
-                                foregroundColor: bookAppointmentController
-                                            .selectedTimeSlot.value ==
-                                        timeSlots[index]
-                                    ? Colors.white
-                                    : Colors.black,
-                                side: BorderSide.none,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                    Obx(
+                      () => GridView.builder(
+                        shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 4.8,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: bookAppointmentController
+                            .filteredSlotsForSelectedDay.length,
+                        itemBuilder: (context, index) {
+                          var data = bookAppointmentController
+                              .filteredSlotsForSelectedDay[index];
+                          return Obx(() => ElevatedButton(
+                                onPressed: () {
+                                  bookAppointmentController
+                                      .selectedTimeSlot.value = data.timeSlot;
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: bookAppointmentController
+                                              .selectedTimeSlot.value ==
+                                          data.timeSlot
+                                      ? Constants.buttoncolor
+                                      : Colors.white,
+                                  foregroundColor: bookAppointmentController
+                                              .selectedTimeSlot.value ==
+                                          data.timeSlot
+                                      ? Colors.white
+                                      : Colors.black,
+                                  side: BorderSide.none,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
-                              ),
-                              child: Text(timeSlots[index]),
-                            ));
-                      },
-                    ),
+                                child: Text(data.timeSlot),
+                              ));
+                        },
+                      ),
+                    )
                   ],
                 ),
           SizedBox(height: 15.h),
@@ -346,6 +361,12 @@ class _BookAppointmentState extends State<BookAppointment> {
             if (data?['from'] == 'consultnow') {
               Get.toNamed(PageRoutes.videocallmainpage);
             } else {
+              bookAppointmentController.doctorSlotBook(
+                  categoryId: data?['selectedCategoryId'],
+                  doctorId: data?['doctor']['id'],
+                  selectedDate: DateFormat('yyyy-MM-dd')
+                      .format(bookAppointmentController.selectedDay.value),
+                  timeSlot: bookAppointmentController.selectedTimeSlot.value);
               Get.toNamed(PageRoutes.paymentDetail);
             }
           },

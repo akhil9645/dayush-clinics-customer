@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 class DoctorCategoryController extends GetxController {
   RxList doctorsList = [].obs;
+  Rx<String> selectedCategoryId = ''.obs;
 
   getAvailableCategoryDoctors({String? categoryId}) async {
     try {

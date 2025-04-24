@@ -28,6 +28,8 @@ class _CategorydetailpageState extends State<Categorydetailpage> {
       if (homecontroller.categories.isNotEmpty) {
         final firstCategory = homecontroller.categories[0];
         selectedTab = firstCategory['name'];
+        doctorCategoryController.selectedCategoryId.value =
+            firstCategory['id'].toString();
         doctorCategoryController.getAvailableCategoryDoctors(
           categoryId: firstCategory['id'].toString(),
         );
@@ -112,6 +114,7 @@ class _CategorydetailpageState extends State<Categorydetailpage> {
         setState(() {
           selectedTab = title;
         });
+        doctorCategoryController.selectedCategoryId.value = categoryId;
         doctorCategoryController.getAvailableCategoryDoctors(
             categoryId: categoryId);
       },
@@ -190,7 +193,7 @@ class CategoryTab extends StatelessWidget {
                         return DoctorCard(
                           experience: doctor['years_of_experience'] ?? 'N/A',
                           name: '${doctor['user']['username']}s',
-                          isAvaialble: true,
+                          isAvaialble: doctor['is_available'],
                           doctorDetail: doctor,
                         );
                       },
@@ -217,6 +220,9 @@ class DoctorCard extends StatelessWidget {
       this.name,
       this.isAvaialble,
       this.doctorDetail});
+
+  final DoctorCategoryController doctorCategoryController =
+      Get.find<DoctorCategoryController>();
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +314,9 @@ class DoctorCard extends StatelessWidget {
                         ontap: () {
                           Get.toNamed(PageRoutes.patientInfo, arguments: {
                             'from': 'booknow',
-                            'doctor': doctorDetail
+                            'doctor': doctorDetail,
+                            'selectedCategoryId': doctorCategoryController
+                                .selectedCategoryId.value
                           });
                         },
                       ),
@@ -329,7 +337,9 @@ class DoctorCard extends StatelessWidget {
                               ontap: () {
                                 Get.toNamed(PageRoutes.patientInfo, arguments: {
                                   'from': 'consultnow',
-                                  'doctor': doctorDetail
+                                  'doctor': doctorDetail,
+                                  'selectedCategoryId': doctorCategoryController
+                                      .selectedCategoryId.value
                                 });
                               },
                             )

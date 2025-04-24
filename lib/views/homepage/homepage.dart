@@ -68,7 +68,11 @@ class _HomepageState extends State<Homepage> {
               onTap: () => Get.toNamed(PageRoutes.profile),
               child: CircleAvatar(
                 radius: 24,
-                backgroundColor: Colors.green,
+                backgroundColor: Colors.transparent,
+                child: SvgPicture.asset(
+                  'assets/svg/profile_icon.svg',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           )

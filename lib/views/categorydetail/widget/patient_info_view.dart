@@ -1,3 +1,5 @@
+import 'package:dayush_clinic/controller/doctor_category_controller/doctor_category_controller.dart';
+import 'package:dayush_clinic/controller/patient_info_controller.dart/patient_info_controller.dart';
 import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/utils/routes.dart';
@@ -24,6 +26,10 @@ class _PatientInfoViewState extends State<PatientInfoView> {
   bool checkBoxValue = false;
   final ProfileController profileController = Get.put(ProfileController());
   Map<String, dynamic>? data;
+  final PatientInfoController patientInfoController =
+      Get.put(PatientInfoController());
+  final DoctorCategoryController doctorCategoryController =
+      Get.find<DoctorCategoryController>();
 
   @override
   void initState() {
@@ -173,12 +179,23 @@ class _PatientInfoViewState extends State<PatientInfoView> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          ontap: () {
+          ontap: () async {
             if (formkey.currentState!.validate()) {
-              Get.toNamed(PageRoutes.bookappointment, arguments: {
-                'from': data?['from'],
-                'doctor': data?['doctor']
-              });
+              var status = await patientInfoController.addPatientInfo(
+                  patientAge: agecontroller.text,
+                  patientName: namecontroller.text,
+                  phoneNum: phonenumcontroller.text,
+                  doctorId: data?['doctor']['id'],
+                  categoryId: data?['selectedCategoryId'],
+                  amount: data?['doctor']['consultation_fee'],
+                  patientDescription: descriptioncontroller.text);
+              if (status == true) {
+                Get.toNamed(PageRoutes.bookappointment, arguments: {
+                  'from': data?['from'],
+                  'doctor': data?['doctor'],
+                  'selectedCategoryId': data?['selectedCategoryId']
+                });
+              } else {}
             }
           },
         ),
