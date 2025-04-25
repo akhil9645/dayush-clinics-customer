@@ -27,40 +27,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Constants.buttoncolor,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 10.r),
+          child: GestureDetector(
+            onTap: () => Get.back(),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
       backgroundColor: Colors.white,
       body: Column(
         children: [
           Container(
             width: double.infinity,
-            padding: EdgeInsets.only(top: 100, bottom: 50).r,
+            padding: EdgeInsets.only(top: 75, bottom: 50).r,
             color: Color(0xFF0B6B3D),
             child: Column(
               children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      width: 80.w,
-                      height: 80.h,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2.w),
-                        image: DecorationImage(
-                          image: AssetImage(
-                              'assets/images/c0301b58c7a6336d8509dfdd7a892c56.png'),
-                        ),
-                      ),
+                Container(
+                  width: 80.w,
+                  height: 80.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2.w),
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/c0301b58c7a6336d8509dfdd7a892c56.png'),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(4).r,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.edit,
-                          size: 16.sp, color: Color(0xFF0B6B3D)),
-                    ),
-                  ],
+                  ),
                 ),
                 Constants().h10,
                 Obx(
@@ -100,7 +99,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _buildMenuItem(
                       icon: Icons.question_answer,
                       title: 'FAQs',
-                      ontap: () {},
+                      ontap: () {
+                        Get.toNamed(PageRoutes.faqview);
+                      },
                       color: Color(0xFF0B6B3D),
                     ),
                     _buildMenuItem(
@@ -197,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(left: 25, right: 25),
                   child: CommonWidgets().commonbutton(
                     title: Text(
                       buttonTitle ?? '',
@@ -210,14 +211,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(left: 25, right: 25),
                   child: CommonWidgets().commonbutton(
                     buttonColor: Colors.grey.shade100,
                     title: Text(
                       'Cancel',
                       style: TextStyle(
                           color: Constants.buttoncolor,
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600),
                     ),
                     ontap: () => Get.back(),

@@ -45,8 +45,11 @@ class Constants {
             Constants().h10,
             _buildMenuItem(
               icon: Icons.calendar_today,
-              title: 'Consultation Details',
+              title: 'Consultation History',
               color: Color(0xFF0B6B3D),
+              ontap: () {
+                Get.toNamed(PageRoutes.consultationHistory);
+              },
             ),
             _buildMenuItem(
               icon: Icons.help_outline_rounded,

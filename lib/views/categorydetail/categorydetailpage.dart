@@ -191,7 +191,9 @@ class CategoryTab extends StatelessWidget {
                         var doctor =
                             doctorCategoryController.doctorsList[index];
                         return DoctorCard(
-                          experience: doctor['years_of_experience'] ?? 'N/A',
+                          experience: doctor['years_of_experience'] != null
+                              ? doctor['years_of_experience'].toString()
+                              : '0',
                           name: '${doctor['user']['username']}s',
                           isAvaialble: doctor['is_available'],
                           doctorDetail: doctor,
@@ -286,7 +288,7 @@ class DoctorCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          experience ?? '',
+                          '${experience ?? ''} years of Experience',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],

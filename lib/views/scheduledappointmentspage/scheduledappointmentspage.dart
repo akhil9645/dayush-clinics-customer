@@ -7,56 +7,116 @@ import 'package:get/get.dart';
 class Scheduledappointmentspage extends StatelessWidget {
   const Scheduledappointmentspage({super.key});
 
+  // Sample appointment list
+  final List<Map<String, dynamic>> appointmentList = const [
+    {
+      'date': '2025-04-25',
+      'time': '10:40',
+      'doctorName': 'Dr. Anjali Raj',
+      'specialization': 'Sr Consultant-Ayurveda',
+      'disease': 'Sugar',
+    },
+    {
+      'date': '2025-04-26',
+      'time': '11:00',
+      'doctorName': 'Dr. Ravi Kumar',
+      'specialization': 'General Physician',
+      'disease': 'Fever',
+    },
+    {
+      'date': '2025-04-28',
+      'time': '12:15',
+      'doctorName': 'Dr. Sneha Gupta',
+      'specialization': 'Dermatologist',
+      'disease': 'Acne',
+    },
+    {
+      'date': '2025-05-10',
+      'time': '09:00',
+      'doctorName': 'Dr. Neha Sharma',
+      'specialization': 'Cardiologist',
+      'disease': 'Hypertension',
+    },
+  ];
+
+  // Grouping logic
+  Map<String, List<Map<String, dynamic>>> groupAppointments(
+      List<Map<String, dynamic>> appointments) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final endOfWeek = today.add(const Duration(days: 7));
+    final endOfMonth = DateTime(now.year, now.month + 1, 0);
+
+    Map<String, List<Map<String, dynamic>>> grouped = {
+      'Today': [],
+      'Tomorrow': [],
+      'This Week': [],
+      'This Month': [],
+      'Others': [],
+    };
+
+    for (var appointment in appointments) {
+      final date = DateTime.parse(appointment['date']);
+      final cleanDate = DateTime(date.year, date.month, date.day);
+
+      if (cleanDate == today) {
+        grouped['Today']!.add(appointment);
+      } else if (cleanDate == tomorrow) {
+        grouped['Tomorrow']!.add(appointment);
+      } else if (cleanDate.isAfter(tomorrow) && cleanDate.isBefore(endOfWeek)) {
+        grouped['This Week']!.add(appointment);
+      } else if (cleanDate.isAfter(endOfWeek) &&
+          cleanDate.isBefore(endOfMonth)) {
+        grouped['This Month']!.add(appointment);
+      } else {
+        grouped['Others']!.add(appointment);
+      }
+    }
+
+    return grouped;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final groupedAppointments = groupAppointments(appointmentList);
+
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: CommonWidgets().commonappbar('Scheduled Appointments'),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20).r,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSectionTitle('Today:'),
-                _buildAppointmentCard(
-                  tab: 'SH',
-                  isConsultnow: true,
-                  date: '30/04/2001',
-                  time: '10:40',
-                  doctorName: 'Dr. Anjali Raj',
-                  specialization: 'Sr Consultant-Ayurveda',
-                  disease: 'Sugar',
-                  isHistory: false,
-                ),
-                SizedBox(height: 16),
-                _buildSectionTitle('Tomorrow:'),
-                _buildAppointmentCard(
-                  tab: 'SH',
-                  isConsultnow: false,
-                  date: '30/04/2001',
-                  time: '10:40',
-                  doctorName: 'Dr. Anjali Raj',
-                  specialization: 'Sr Consultant-Ayurveda',
-                  disease: 'Sugar',
-                  isHistory: false,
-                ),
-                SizedBox(height: 16),
-                _buildSectionTitle('This Week:'),
-                _buildAppointmentCard(
-                  tab: 'SH',
-                  isConsultnow: false,
-                  date: '30/04/2001',
-                  time: '10:40',
-                  doctorName: 'Dr. Anjali Raj',
-                  specialization: 'Sr Consultant-Ayurveda',
-                  disease: 'Sugar',
-                  isHistory: false,
-                ),
-              ],
-            ),
+      backgroundColor: Colors.white,
+      appBar: CommonWidgets().commonappbar('Scheduled Appointments'),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15).r,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: groupedAppointments.entries.map((entry) {
+              if (entry.value.isEmpty) return const SizedBox(); // Skip empty
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle('${entry.key}:'),
+                  ...entry.value.map((data) {
+                    final isToday = entry.key == 'Today';
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _buildAppointmentCard(
+                        isConsultnow: isToday,
+                        date: data['date'],
+                        time: data['time'],
+                        doctorName: data['doctorName'],
+                        specialization: data['specialization'],
+                        disease: data['disease'],
+                      ),
+                    );
+                  }).toList(),
+                ],
+              );
+            }).toList(),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildAppointmentCard(
@@ -65,8 +125,6 @@ class Scheduledappointmentspage extends StatelessWidget {
       required String doctorName,
       required String specialization,
       required String disease,
-      required bool isHistory,
-      required String tab,
       required bool isConsultnow}) {
     return Card(
       color: Colors.white,
@@ -96,12 +154,10 @@ class Scheduledappointmentspage extends StatelessWidget {
             isConsultnow
                 ? CommonWidgets().commonbutton(
                     ontap: () {
-                      isConsultnow == true && tab == 'SH'
-                          ? Get.toNamed(PageRoutes.videocallmainpage)
-                          : null;
+                      Get.toNamed(PageRoutes.videocallmainpage);
                     },
                     title: Text(
-                      tab != 'CH' ? 'Consult Now' : 'Download Prescription',
+                      'Consult Now',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 12.sp,

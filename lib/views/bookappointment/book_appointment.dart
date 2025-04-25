@@ -364,6 +364,7 @@ class _BookAppointmentState extends State<BookAppointment> {
               bookAppointmentController.doctorSlotBook(
                   categoryId: data?['selectedCategoryId'],
                   doctorId: data?['doctor']['id'],
+                  consultationId: data?['bookingId'],
                   selectedDate: DateFormat('yyyy-MM-dd')
                       .format(bookAppointmentController.selectedDay.value),
                   timeSlot: bookAppointmentController.selectedTimeSlot.value);

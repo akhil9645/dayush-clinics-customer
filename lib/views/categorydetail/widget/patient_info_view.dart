@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dayush_clinic/controller/doctor_category_controller/doctor_category_controller.dart';
 import 'package:dayush_clinic/controller/patient_info_controller.dart/patient_info_controller.dart';
 import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
@@ -189,13 +191,14 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                   categoryId: data?['selectedCategoryId'],
                   amount: data?['doctor']['consultation_fee'],
                   patientDescription: descriptioncontroller.text);
-              if (status == true) {
+              if (status is int && status > 1) {
                 Get.toNamed(PageRoutes.bookappointment, arguments: {
                   'from': data?['from'],
                   'doctor': data?['doctor'],
-                  'selectedCategoryId': data?['selectedCategoryId']
+                  'selectedCategoryId': data?['selectedCategoryId'],
+                  'bookingId': status
                 });
-              } else {}
+              }
             }
           },
         ),

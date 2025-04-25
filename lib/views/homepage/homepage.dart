@@ -49,25 +49,20 @@ class _HomepageState extends State<Homepage> {
         forceMaterialTransparency: true,
         centerTitle: true,
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 15.r),
-            child: Badge(
-              backgroundColor: Colors.red,
-              label: Text('1'),
-              child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.notifications,
-                    size: 20.w,
-                  )),
-            ),
-          ),
+          IconButton(
+              onPressed: () {
+                Get.toNamed(PageRoutes.notificationview);
+              },
+              icon: Icon(
+                Icons.notifications,
+                size: 24.w,
+              )),
           Padding(
             padding: EdgeInsets.only(right: 15.r),
             child: GestureDetector(
               onTap: () => Get.toNamed(PageRoutes.profile),
               child: CircleAvatar(
-                radius: 24,
+                radius: 24.r,
                 backgroundColor: Colors.transparent,
                 child: SvgPicture.asset(
                   'assets/svg/profile_icon.svg',

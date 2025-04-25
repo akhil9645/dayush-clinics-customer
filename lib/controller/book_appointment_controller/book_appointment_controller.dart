@@ -64,9 +64,14 @@ class BookAppointmentController extends GetxController {
   }
 
   doctorSlotBook(
-      {var doctorId, var categoryId, var selectedDate, var timeSlot}) async {
+      {var doctorId,
+      var categoryId,
+      var selectedDate,
+      var timeSlot,
+      var consultationId}) async {
     try {
       var body = {
+        "consultationId": consultationId,
         "doctor_id": doctorId,
         "category_id": categoryId,
         "date": selectedDate,

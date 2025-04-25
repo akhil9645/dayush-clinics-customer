@@ -30,14 +30,15 @@ class PatientInfoController extends GetxController {
       if (response != null &&
           response['message'] == 'Consultation booked successfully!') {
         isLoading.value = false;
-        return true;
+        var bookingId = response['data']['id'] ?? 0;
+        return bookingId;
       } else {
         isLoading.value = false;
-        return false;
+        return 0;
       }
     } catch (e) {
       log("Exception : $e");
-      return false;
+      return 0;
     }
   }
 }
