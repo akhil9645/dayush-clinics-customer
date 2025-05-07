@@ -23,6 +23,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   intl:
   table_calendar: 
+  url_launcher: 
 
 dev_dependencies:
   flutter_test:

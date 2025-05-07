@@ -71,7 +71,7 @@ class BookAppointmentController extends GetxController {
       var consultationId}) async {
     try {
       var body = {
-        "consultationId": consultationId,
+        "consultation_id": consultationId,
         "doctor_id": doctorId,
         "category_id": categoryId,
         "date": selectedDate,

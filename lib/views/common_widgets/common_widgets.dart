@@ -93,11 +93,11 @@ class CommonWidgets {
       backgroundColor: Colors.white,
       elevation: 0,
       forceMaterialTransparency: true,
-      centerTitle: true,
+      centerTitle: false,
       title: Text(
         title,
         style: TextStyle(
-            color: Colors.black, fontSize: 18.sp, fontWeight: FontWeight.bold),
+            color: Colors.black, fontSize: 16.sp, fontWeight: FontWeight.bold),
       ),
       leading: Padding(
         padding: EdgeInsets.only(left: 10.r),

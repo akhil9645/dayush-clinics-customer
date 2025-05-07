@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
               useMaterial3: true,
               primarySwatch: Colors.green,
-              fontFamily: GoogleFonts.lato().fontFamily),
+              fontFamily: GoogleFonts.dmSans().fontFamily),
           home: Splashscreen(),
           getPages: getpages,
         );

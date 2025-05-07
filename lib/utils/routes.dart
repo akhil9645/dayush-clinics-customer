@@ -9,6 +9,7 @@ import 'package:dayush_clinic/views/categorydetail/widget/patient_info_view.dart
 import 'package:dayush_clinic/views/consultationHistory/consulationHistory_view.dart';
 import 'package:dayush_clinic/views/homepage/homepage.dart';
 import 'package:dayush_clinic/views/notification_view/notification_view.dart';
+import 'package:dayush_clinic/views/profilepage/about_us_view/about_us_view.dart';
 import 'package:dayush_clinic/views/profilepage/faq_view/faq_view.dart';
 import 'package:dayush_clinic/views/profilepage/profile_screen.dart';
 import 'package:dayush_clinic/views/scheduledappointmentspage/scheduledappointmentspage.dart';
@@ -35,6 +36,7 @@ class PageRoutes {
   static const scheduledAppointment = '/scheduleAppointment';
   static const notificationview = '/notificationview';
   static const faqview = '/faqview';
+  static const aboutus = '/aboutus';
 }
 
 List<GetPage<dynamic>> getpages = [
@@ -123,6 +125,11 @@ List<GetPage<dynamic>> getpages = [
   GetPage(
       name: PageRoutes.consultationHistory,
       page: () => ConsultationHistoryView(),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 200)),
+  GetPage(
+      name: PageRoutes.aboutus,
+      page: () => AboutUsView(),
       transition: Transition.cupertino,
       transitionDuration: Duration(milliseconds: 200)),
 ];

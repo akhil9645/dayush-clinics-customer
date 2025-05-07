@@ -97,6 +97,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Color(0xFF0B6B3D),
                     ),
                     _buildMenuItem(
+                      icon: Icons.info_outline_rounded,
+                      title: 'About Us',
+                      ontap: () {
+                        Get.toNamed(PageRoutes.aboutus);
+                      },
+                      color: Color(0xFF0B6B3D),
+                    ),
+                    _buildMenuItem(
                       icon: Icons.question_answer,
                       title: 'FAQs',
                       ontap: () {

@@ -13,16 +13,28 @@ class ProfileController extends GetxController {
     try {
       var response =
           await DioHandler.dioGETWithAuth(endpoint: 'patient/details/');
+      log("ithinte response ${response.toString()}");
 
-      if (response != null && response is Map<String, dynamic>) {
+      if (response != null &&
+          response is Map<String, dynamic> &&
+          response.containsKey('user')) {
+        log('gone inside');
         Map<String, dynamic> user = response['user'];
 
         username.value = user['username'] ?? '';
         phonenum.value = user['phone_number'] ?? '';
-      } else {
-        log("Invalid response format");
+      } else if (response != null &&
+          response['detail'] == 'Given token not valid for any token type') {
+        log('not gone inside');
+        TokenStorageService().deleteToken();
+        Get.offAllNamed(PageRoutes.login);
+      } else if (response['error'] == 'Unauthorized') {
+        TokenStorageService().deleteToken();
+        Get.offAllNamed(PageRoutes.login);
       }
     } catch (e) {
+      TokenStorageService().deleteToken();
+      Get.offAllNamed(PageRoutes.login);
       log("Exception: $e");
     }
   }
