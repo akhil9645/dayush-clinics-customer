@@ -41,17 +41,25 @@ class ProfileController extends GetxController {
 
   userLogout(BuildContext context) async {
     try {
-      var response =
-          await DioHandler.dioPOSTWithAuth(endpoint: 'accounts/logout/');
-      if (response != null) {
+      var refreshtoken = await TokenStorageService().getRefreshToken();
+      var body = {"refresh_token": refreshtoken};
+      var response = await DioHandler.dioPOSTWithAuth(
+          endpoint: 'accounts/logout/', body: body);
+      if (response != null &&
+          response['message'] == 'User logged out successfully.') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Logout successful.'),
           ),
         );
+        await TokenStorageService().deleteRefreshToken();
         await TokenStorageService().deleteToken();
         Get.offAllNamed(PageRoutes.login);
-      } else {}
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Logout failed. Please try again.')),
+        );
+      }
     } catch (e) {
       log("Exception : $e");
       ScaffoldMessenger.of(context).showSnackBar(

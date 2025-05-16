@@ -194,7 +194,7 @@ class CategoryTab extends StatelessWidget {
                           experience: doctor['years_of_experience'] != null
                               ? doctor['years_of_experience'].toString()
                               : '0',
-                          name: '${doctor['user']['username']}s',
+                          name: '${doctor['user']['username']}',
                           isAvaialble: doctor['is_available'],
                           doctorDetail: doctor,
                         );

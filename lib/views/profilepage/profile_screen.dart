@@ -165,78 +165,78 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+}
 
-  void showSuccessDialog(BuildContext context, String? iconPath,
-      {String? title, String? buttonTitle, Function()? ontap}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          contentPadding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
+void showSuccessDialog(BuildContext context, String? iconPath,
+    {String? title, String? buttonTitle, Function()? ontap}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12).r,
+        ),
+        content: Container(
+          width: 284.w,
+          height: 280.h,
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12).r,
+            color: Colors.white,
           ),
-          content: Container(
-            width: 284.w,
-            height: 280.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12).r,
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: 20.h),
-                SvgPicture.asset(
-                  iconPath ?? "",
-                  width: 61.w,
-                  height: 61.h,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 20.h),
+              SvgPicture.asset(
+                iconPath ?? "",
+                width: 61.w,
+                height: 61.h,
+              ),
+              SizedBox(height: 20.h),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title ?? '',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20.h),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    title ?? '',
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 25, right: 25),
+                child: CommonWidgets().commonbutton(
+                  title: Text(
+                    buttonTitle ?? '',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.sp,
+                        color: Colors.white,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600),
-                    textAlign: TextAlign.center,
                   ),
+                  ontap: ontap,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25),
-                  child: CommonWidgets().commonbutton(
-                    title: Text(
-                      buttonTitle ?? '',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    ontap: ontap,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 25, right: 25),
+                child: CommonWidgets().commonbutton(
+                  buttonColor: Colors.grey.shade100,
+                  title: Text(
+                    'Cancel',
+                    style: TextStyle(
+                        color: Constants.buttoncolor,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600),
                   ),
+                  ontap: () => Get.back(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25),
-                  child: CommonWidgets().commonbutton(
-                    buttonColor: Colors.grey.shade100,
-                    title: Text(
-                      'Cancel',
-                      style: TextStyle(
-                          color: Constants.buttoncolor,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    ontap: () => Get.back(),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
 }

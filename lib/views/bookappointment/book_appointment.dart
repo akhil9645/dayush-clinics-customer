@@ -359,7 +359,8 @@ class _BookAppointmentState extends State<BookAppointment> {
           ),
           ontap: () async {
             if (data?['from'] == 'consultnow') {
-              Get.toNamed(PageRoutes.videocallmainpage);
+              Get.toNamed(PageRoutes.videocallmainpage,
+                  arguments: {"consultationId": data?['bookingId']});
             } else {
               bookAppointmentController.doctorSlotBook(
                   categoryId: data?['selectedCategoryId'],

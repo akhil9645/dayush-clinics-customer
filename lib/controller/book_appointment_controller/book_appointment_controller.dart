@@ -11,6 +11,7 @@ class BookAppointmentController extends GetxController {
   Rx<DateTime> selectedDay = DateTime.now().obs;
   Rx<String> selectedTimeSlot = ''.obs;
   Rx<CalendarFormat> calendarFormat = CalendarFormat.month.obs;
+  RxMap<String, dynamic> agoraTokenResponse = <String, dynamic>{}.obs;
 
   RxList<AppointmentSlot> appointmentSlots = <AppointmentSlot>[].obs;
   RxList<DateTime> availableDates = <DateTime>[].obs;
@@ -84,6 +85,25 @@ class BookAppointmentController extends GetxController {
       } else {}
     } catch (e) {
       log("Exception : $e");
+    }
+  }
+
+  getAgoraToken({var consultaionId}) async {
+    try {
+      var response = await DioHandler.dioGETWithAuth(
+          endpoint:
+              'doctor/generate-agora-token/?consultation_id=$consultaionId');
+      if (response != null) {
+        log("Agora Response : ${response.toString()}");
+        agoraTokenResponse.value = response;
+        return true;
+      } else {
+        log(response.toString());
+        return false;
+      }
+    } catch (e) {
+      log("Exception : $e");
+      return false;
     }
   }
 }

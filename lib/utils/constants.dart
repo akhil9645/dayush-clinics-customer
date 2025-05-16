@@ -1,5 +1,6 @@
 import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/routes.dart';
+import 'package:dayush_clinic/views/profilepage/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,11 +28,11 @@ class Constants {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2.w),
-                image: DecorationImage(
+              ),
+              child: ClipOval(
+                child: SvgPicture.asset(
+                  'assets/svg/profile_icon.svg', // Updated to SVG
                   fit: BoxFit.cover,
-                  image: AssetImage(
-                    'assets/images/0e4da77312f3cdaf1fb4ca76413499dc.png',
-                  ),
                 ),
               ),
             ),
@@ -69,7 +70,12 @@ class Constants {
               icon: Icons.logout_rounded,
               title: 'Logout',
               color: Colors.red,
-              ontap: () => Get.offAllNamed(PageRoutes.login),
+              ontap: () {
+                showSuccessDialog(context, 'assets/svg/logout_icon.svg',
+                    buttonTitle: 'Logout', ontap: () {
+                  profilecontroller.userLogout(context);
+                }, title: 'Are you sure to log out of your account?');
+              },
             ),
           ],
         ),
