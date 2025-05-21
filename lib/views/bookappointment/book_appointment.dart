@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:dayush_clinic/controller/book_appointment_controller/book_appointment_controller.dart';
 import 'package:dayush_clinic/utils/routes.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
@@ -42,9 +44,19 @@ class _BookAppointmentState extends State<BookAppointment> {
 
   @override
   Widget build(BuildContext context) {
-    double consultationFee = 225.0; // Example consultation fee (can be dynamic)
-    double adminFee = consultationFee * 0.05; // 5% of consultation fee
-    double totalAmount = consultationFee + adminFee;
+    String formattedFee = '';
+    if (data?['doctor']['consultation_fee'] != null) {
+      try {
+        double fee =
+            double.parse(data!['doctor']['consultation_fee'].toString());
+        formattedFee = fee.toStringAsFixed(0); // Remove decimal places
+      } catch (e) {
+        formattedFee = 'N/A'; // Fallback if parsing fails
+        developer.log("Error parsing consultationFee: $e");
+      }
+    } else {
+      formattedFee = 'N/A'; // Fallback for null
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -71,13 +83,12 @@ class _BookAppointmentState extends State<BookAppointment> {
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 20).r,
         child: ListView(children: [
-          Card(
-            color: Colors.white,
+          Container(
             margin: EdgeInsets.zero,
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12).r,
-            ),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12).r,
+                border: Border.all(color: Colors.grey.shade300)),
             child: Padding(
               padding: const EdgeInsets.all(10).r,
               child: Row(
@@ -88,8 +99,8 @@ class _BookAppointmentState extends State<BookAppointment> {
                     child: Image.asset(
                       'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png',
                       width: 100.w,
-                      height: 150.h,
-                      fit: BoxFit.cover,
+                      height: 100.h,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -98,7 +109,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          data?['doctor']['user']['username'],
+                          "Dr. ${data?['doctor']['user']['username']}",
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
@@ -112,23 +123,29 @@ class _BookAppointmentState extends State<BookAppointment> {
                             fontSize: 12.sp,
                           ),
                         ),
-                        SizedBox(height: 6.h),
-                        SizedBox(height: 8.h),
-                        data?['from'] == 'consultnow'
-                            ? Text(
-                                'Available Online',
-                                style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600),
-                              )
-                            : Text(
-                                'Select Time Slot',
-                                style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600),
-                              )
+                        SizedBox(height: 4.h),
+                        Row(
+                          children: [
+                            // Experience
+                            Icon(Icons.person,
+                                color: Constants.buttoncolor, size: 24.sp),
+                            Text(
+                              '${data?['doctor']['years_of_experience'] ?? ''} years of Experience',
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          '₹$formattedFee per Session',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -282,66 +299,7 @@ class _BookAppointmentState extends State<BookAppointment> {
           data?['from'] == 'consultnow'
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Payment Detail',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Constants().h10,
-                    _buildPaymentRow(
-                        'Consultation', '₹${consultationFee.toString()}'),
-                    _buildPaymentRow('Platform Fee', '₹${adminFee.toString()}'),
-                    _buildPaymentRow('Total', '₹${totalAmount.toString()}',
-                        isTotal: true),
-                    Constants().h10,
-                    Divider(
-                      color: Colors.grey.shade300,
-                    ),
-                    Constants().h10,
-                    Text(
-                      'Payment Method',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Constants().h10,
-                    Container(
-                      padding: EdgeInsets.all(12).r,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Constants.buttoncolor, width: 0.5.w),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8).r,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/visa-icon-2048x628-6yzgq2vq.png',
-                                height: 12.h,
-                              ),
-                              SizedBox(width: 12.w),
-                              Text('•••• 4321'),
-                            ],
-                          ),
-                          Text(
-                            'Change',
-                            style: TextStyle(
-                              color: Colors.grey.shade700,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  children: [],
                 )
               : SizedBox()
         ]),
@@ -362,56 +320,23 @@ class _BookAppointmentState extends State<BookAppointment> {
               Get.toNamed(PageRoutes.videocallmainpage,
                   arguments: {"consultationId": data?['bookingId']});
             } else {
-              bookAppointmentController.doctorSlotBook(
-                  categoryId: data?['selectedCategoryId'],
-                  doctorId: data?['doctor']['id'],
-                  consultationId: data?['bookingId'],
-                  selectedDate: DateFormat('yyyy-MM-dd')
-                      .format(bookAppointmentController.selectedDay.value),
-                  timeSlot: bookAppointmentController.selectedTimeSlot.value);
-              Get.toNamed(PageRoutes.paymentDetail);
+              if (bookAppointmentController.selectedTimeSlot.value.isNotEmpty) {
+                bookAppointmentController.doctorSlotBook(
+                    categoryId: data?['selectedCategoryId'],
+                    doctorId: data?['doctor']['id'],
+                    consultationId: data?['bookingId'],
+                    selectedDate: DateFormat('yyyy-MM-dd')
+                        .format(bookAppointmentController.selectedDay.value),
+                    timeSlot: bookAppointmentController.selectedTimeSlot.value);
+                Get.offAllNamed(PageRoutes.homepage);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    CommonWidgets().snackBarinfo('Please select time slot'));
+              }
             }
           },
         ),
       ),
     );
   }
-}
-
-Widget _buildAvailabilityText(String text) {
-  return Padding(
-    padding: EdgeInsets.only(bottom: 4).r,
-    child: Text(
-      text,
-      style: TextStyle(
-        color: Constants.buttoncolor.withValues(alpha: 0.5),
-        fontSize: 11.sp,
-      ),
-    ),
-  );
-}
-
-Widget _buildPaymentRow(String label, String amount, {bool isTotal = false}) {
-  return Padding(
-    padding: EdgeInsets.symmetric(vertical: 4.sp),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: isTotal ? Colors.black : Colors.grey[600],
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        Text(
-          amount,
-          style: TextStyle(
-            color: isTotal ? Constants.buttoncolor : Colors.black,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
 }

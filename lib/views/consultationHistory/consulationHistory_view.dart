@@ -1,5 +1,8 @@
+import 'dart:developer' as developer;
+
 import 'package:dayush_clinic/controller/consultation_history%20&%20scheduled%20appointmentsController/consultationHistoryScheduledAppointmentscontroller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
+import 'package:dayush_clinic/utils/routes.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -234,6 +237,7 @@ class _ConsultationHistoryViewState extends State<ConsultationHistoryView> {
                                   doctorName: data['doctor_name'],
                                   specialization: data['category_name'],
                                   disease: data['disease_description'],
+                                  id: data['id'],
                                   isPrescriptionAvailable:
                                       data['prescription_url'] != null
                                           ? true
@@ -249,6 +253,7 @@ class _ConsultationHistoryViewState extends State<ConsultationHistoryView> {
   Widget _buildAppointmentCard({
     required String date,
     required String time,
+    required int id,
     required String doctorName,
     required String patientName,
     required String categoryName,
@@ -258,6 +263,18 @@ class _ConsultationHistoryViewState extends State<ConsultationHistoryView> {
     required var amount,
     required bool isPrescriptionAvailable,
   }) {
+    String formattedFee = '';
+    if (amount != null) {
+      try {
+        double fee = double.parse(amount.toString());
+        formattedFee = fee.toStringAsFixed(0); // Remove decimal places
+      } catch (e) {
+        formattedFee = 'N/A'; // Fallback if parsing fails
+        developer.log("Error parsing consultationFee: $e");
+      }
+    } else {
+      formattedFee = 'N/A'; // Fallback for null
+    }
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -291,15 +308,18 @@ class _ConsultationHistoryViewState extends State<ConsultationHistoryView> {
             SizedBox(height: 4),
             _buildInfoRow('Disease : ', disease),
             SizedBox(height: 4),
-            _buildInfoRow('Amount : ', amount.toString()),
+            _buildInfoRow('Amount : ', "₹$formattedFee"),
             SizedBox(height: 4),
             _buildInfoRow('Status : ', status),
             SizedBox(height: 12),
             isPrescriptionAvailable
                 ? CommonWidgets().commonbutton(
-                    ontap: () {},
+                    ontap: () {
+                      Get.toNamed(PageRoutes.viewPrescription,
+                          arguments: {"consultationId": id});
+                    },
                     title: Text(
-                      'Download Prescription',
+                      'View Prescription',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 12.sp,

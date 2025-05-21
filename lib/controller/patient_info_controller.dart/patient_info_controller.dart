@@ -12,6 +12,9 @@ class PatientInfoController extends GetxController {
       var doctorId,
       var categoryId,
       var amount,
+      String? email,
+      String? gender,
+      bool? directConsultation,
       String? patientDescription}) async {
     try {
       isLoading.value = true;
@@ -22,6 +25,9 @@ class PatientInfoController extends GetxController {
         "age": int.parse(patientAge ?? ''),
         "phone_number": phoneNum,
         "disease_description": patientDescription,
+        "gender": gender,
+        "email": email,
+        "direct_consultation": directConsultation,
         "amount": amount
       };
       log(body.toString());

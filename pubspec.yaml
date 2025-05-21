@@ -24,6 +24,10 @@ dependencies:
   intl:
   table_calendar: 
   url_launcher: 
+  syncfusion_flutter_pdfviewer: 
+  path_provider:
+  flutter_pdfview:
+  share_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:

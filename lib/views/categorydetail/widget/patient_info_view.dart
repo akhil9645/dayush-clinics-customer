@@ -23,6 +23,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final TextEditingController namecontroller = TextEditingController();
   final TextEditingController agecontroller = TextEditingController();
+  final TextEditingController emailcontroller = TextEditingController();
   final TextEditingController phonenumcontroller = TextEditingController();
   final TextEditingController descriptioncontroller = TextEditingController();
   bool checkBoxValue = false;
@@ -32,6 +33,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
       Get.put(PatientInfoController());
   final DoctorCategoryController doctorCategoryController =
       Get.find<DoctorCategoryController>();
+  String? selectedGender = 'Male';
 
   @override
   void initState() {
@@ -84,9 +86,12 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                                 profileController.username.value;
                             phonenumcontroller.text =
                                 profileController.phonenum.value;
+                            emailcontroller.text =
+                                profileController.email.value;
                           } else {
                             namecontroller.clear();
                             phonenumcontroller.clear();
+                            emailcontroller.clear();
                           }
                         });
                       },
@@ -144,6 +149,57 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                   ),
                   hintText: 'Enter Patient Phone Number'),
               SizedBox(height: 20.h),
+              formHeadingTile('Patient Email'),
+              SizedBox(height: 5.h),
+              CommonWidgets().commonTextfield(
+                  textController: emailcontroller,
+                  validator: (p0) => ValidationHelper.emailValidation(p0 ?? ''),
+                  keyboardtype: TextInputType.emailAddress,
+                  hintText: 'Enter Patient Email'),
+              SizedBox(height: 20.h),
+              formHeadingTile('Patient Gender'),
+              SizedBox(height: 5.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: Text(
+                        'Male',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                      value: 'Male',
+                      groupValue: selectedGender,
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedGender = value;
+                        });
+                      },
+                      activeColor: Constants.buttoncolor,
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: Text(
+                        'Female',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                      value: 'Female',
+                      groupValue: selectedGender,
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedGender = value;
+                        });
+                      },
+                      activeColor: Constants.buttoncolor,
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -166,6 +222,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                   keyboardtype: TextInputType.text,
                   maxLines: 4,
                   hintText: 'Enter patient disease description'),
+              SizedBox(height: 20.h)
             ],
           ),
         ),
@@ -188,8 +245,12 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                   patientName: namecontroller.text,
                   phoneNum: phonenumcontroller.text,
                   doctorId: data?['doctor']['id'],
+                  email: emailcontroller.text,
+                  gender: selectedGender,
                   categoryId: data?['selectedCategoryId'],
                   amount: data?['doctor']['consultation_fee'],
+                  directConsultation:
+                      data?['from'] == 'consultnow' ? true : false,
                   patientDescription: descriptioncontroller.text);
               if (status is int && status > 1) {
                 Get.toNamed(PageRoutes.bookappointment, arguments: {

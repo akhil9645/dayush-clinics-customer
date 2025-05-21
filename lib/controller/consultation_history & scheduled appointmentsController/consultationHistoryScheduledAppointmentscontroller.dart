@@ -10,6 +10,7 @@ class ConsultationController extends GetxController {
   RxList<Map<String, dynamic>> appointmentList = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> scheduledAppointMentList =
       <Map<String, dynamic>>[].obs;
+  RxString downloadUrl = ''.obs;
 
   getConsulationHistory() async {
     try {
@@ -55,6 +56,22 @@ class ConsultationController extends GetxController {
       log("Exception: $e");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  getPrescriptionDownloadUrl(var consultationId) async {
+    try {
+      var response = await DioHandler.dioGETWithAuth(
+          endpoint:
+              'doctor/consultations/$consultationId/download-prescription/');
+      if (response != null && response.containsKey('download_url')) {
+        downloadUrl.value = response['download_url'];
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Exception : $e");
     }
   }
 }

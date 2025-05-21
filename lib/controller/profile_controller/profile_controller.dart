@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 class ProfileController extends GetxController {
   RxString username = ''.obs;
   RxString phonenum = ''.obs;
+  RxString email = ''.obs;
   getUserProfile() async {
     try {
       var response =
@@ -23,6 +24,7 @@ class ProfileController extends GetxController {
 
         username.value = user['username'] ?? '';
         phonenum.value = user['phone_number'] ?? '';
+        email.value = user['email'] ?? '';
       } else if (response != null &&
           response['detail'] == 'Given token not valid for any token type') {
         log('not gone inside');

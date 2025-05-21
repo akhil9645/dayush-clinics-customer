@@ -1,5 +1,6 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:dayush_clinic/controller/book_appointment_controller/book_appointment_controller.dart';
+import 'package:dayush_clinic/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -152,7 +153,7 @@ class _VideocallmainState extends State<Videocallmain> {
 
   Future<void> _endCall() async {
     await _dispose();
-    Get.back();
+    Get.offAllNamed(PageRoutes.homepage);
   }
 
   @override

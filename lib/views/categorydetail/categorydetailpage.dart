@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:dayush_clinic/controller/doctor_category_controller/doctor_category_controller.dart';
 import 'package:dayush_clinic/controller/homecontroller/homecontroller.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
@@ -196,6 +198,7 @@ class CategoryTab extends StatelessWidget {
                               : '0',
                           name: '${doctor['user']['username']}',
                           isAvaialble: doctor['is_available'],
+                          consultationFee: doctor['consultation_fee'],
                           doctorDetail: doctor,
                         );
                       },
@@ -216,10 +219,12 @@ class DoctorCard extends StatelessWidget {
   String? experience;
   bool? isAvaialble = true;
   dynamic doctorDetail;
+  dynamic consultationFee;
   DoctorCard(
       {super.key,
       this.experience,
       this.name,
+      this.consultationFee,
       this.isAvaialble,
       this.doctorDetail});
 
@@ -228,74 +233,90 @@ class DoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      margin: EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    String formattedFee = '';
+    if (consultationFee != null) {
+      try {
+        double fee = double.parse(consultationFee.toString());
+        formattedFee = fee.toStringAsFixed(0); // Remove decimal places
+      } catch (e) {
+        formattedFee = 'N/A'; // Fallback if parsing fails
+        developer.log("Error parsing consultationFee: $e");
+      }
+    } else {
+      formattedFee = 'N/A'; // Fallback for null
+    }
+    return Container(
+      margin: EdgeInsets.only(bottom: 14).r,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12).r,
+        color: Colors.white,
       ),
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: EdgeInsets.all(10).r,
         child: Row(
           children: [
             // Doctor Image
             Container(
-              width: 80,
-              height: 80,
+              width: 70.w,
+              height: 70.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: AssetImage(
                       'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png'),
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.fill,
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 10.w),
 
             // Doctor Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name ?? '',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Dr. $name",
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '₹$formattedFee per Session',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     'Senior Consultant',
                     style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
+                      color: Colors.black,
+                      fontSize: 12.sp,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 5.h),
                   Row(
                     children: [
                       // Experience
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '${experience ?? ''} years of Experience',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
+                      Icon(Icons.person,
+                          color: Constants.buttoncolor, size: 24.sp),
+                      Text(
+                        '${experience ?? ''} years of Experience',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: Colors.grey[600],
                         ),
                       ),
-                      Spacer(),
                     ],
                   ),
                   Row(
