@@ -28,6 +28,8 @@ dependencies:
   path_provider:
   flutter_pdfview:
   share_plus: ^9.0.0
+  firebase_core: 
+  firebase_messaging:
 
 dev_dependencies:
   flutter_test:

@@ -22,6 +22,8 @@ class _BookAppointmentState extends State<BookAppointment> {
   final BookAppointmentController bookAppointmentController =
       Get.put(BookAppointmentController());
   Map<String, dynamic>? data;
+  bool isExpanded = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -57,6 +59,11 @@ class _BookAppointmentState extends State<BookAppointment> {
     } else {
       formattedFee = 'N/A'; // Fallback for null
     }
+    final fullText = data?['doctor']['description'];
+    final words = fullText.split(' ');
+
+    final showSeeMore = words.length > 20;
+    final shortText = words.take(20).join(' ');
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -91,64 +98,135 @@ class _BookAppointmentState extends State<BookAppointment> {
                 border: Border.all(color: Colors.grey.shade300)),
             child: Padding(
               padding: const EdgeInsets.all(10).r,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8).r,
-                    child: Image.asset(
-                      'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png',
-                      width: 100.w,
-                      height: 100.h,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Dr. ${data?['doctor']['user']['username']}",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8).r,
+                        child: Image.asset(
+                          'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png',
+                          width: 100.w,
+                          height: 120.h,
+                          fit: BoxFit.fill,
                         ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          'Sr Consultant-Ayurveda',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 12.sp,
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Row(
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Experience
-                            Icon(Icons.person,
-                                color: Constants.buttoncolor, size: 24.sp),
                             Text(
-                              '${data?['doctor']['years_of_experience'] ?? ''} years of Experience',
+                              "Dr. ${data?['doctor']['user']['username']}",
                               style: TextStyle(
-                                fontSize: 10.sp,
-                                color: Colors.grey[600],
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              '${data?['doctor']['designation']}',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              '₹$formattedFee per Session',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            SizedBox(height: 5.h),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.person,
+                                    color: Constants.buttoncolor, size: 20.sp),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Experience',
+                                      style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      '${data?['doctor']['years_of_experience'] ?? '0'} Years',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 5.h),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.language_rounded,
+                                    color: Constants.buttoncolor, size: 20.sp),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Languages',
+                                      style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      '${data?['doctor']['languages'] ?? ''}',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 4.h),
                           ],
                         ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          '₹$formattedFee per Session',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 5.h),
+                  Text(
+                    isExpanded || !showSeeMore ? fullText : '$shortText...',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.black,
                     ),
                   ),
+                  if (showSeeMore)
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          isExpanded ? 'See less' : 'See more',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

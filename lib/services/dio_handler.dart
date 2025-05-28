@@ -4,8 +4,7 @@ import 'package:dio/dio.dart';
 
 class DioHandler {
   // static const baseUrl = 'http://65.1.92.125:8080/';
-  static const baseUrl =
-      'https://c9bf-2401-4900-8fdf-cc89-7077-76c-47e5-aa0c.ngrok-free.app/';
+  static const baseUrl = 'https://3562-117-243-247-137.ngrok-free.app/';
   static Dio dio = Dio(BaseOptions(
     validateStatus: (status) {
       if (status == 401) {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "657331635088",
+    "project_id": "dayushclinics-2025",
+    "storage_bucket": "dayushclinics-2025.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657331635088:android:0376ab215c31ebac76e915",
+        "android_client_info": {
+          "package_name": "com.dayush.dayush_clinic_customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiDdnCvBI8MSEWV2s_z6izM6cgkD1rk68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

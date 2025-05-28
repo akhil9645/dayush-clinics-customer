@@ -1,4 +1,4 @@
-package com.example.dayush_clinic
+package com.dayush.dayush_clinic_customer
 
 import io.flutter.embedding.android.FlutterActivity
 

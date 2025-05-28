@@ -240,8 +240,12 @@ class _VideocallmainState extends State<Videocallmain> {
       return AgoraVideoView(
         controller: VideoViewController.remote(
           rtcEngine: _engine!,
-          canvas: VideoCanvas(uid: _remoteUid),
-          connection: RtcConnection(channelId: _channelName!),
+          canvas: VideoCanvas(
+              uid: _remoteUid, renderMode: RenderModeType.renderModeFit),
+          connection: RtcConnection(
+            channelId: _channelName!,
+          ),
+          useAndroidSurfaceView: true,
         ),
       );
     } else {

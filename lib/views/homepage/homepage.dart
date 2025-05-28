@@ -1,3 +1,4 @@
+import 'package:dayush_clinic/controller/authcontroller.dart';
 import 'package:dayush_clinic/controller/homecontroller/homecontroller.dart';
 import 'package:dayush_clinic/controller/profile_controller/profile_controller.dart';
 import 'package:dayush_clinic/utils/constants.dart';
@@ -17,6 +18,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final Homecontroller homecontroller = Get.put(Homecontroller());
+  final Authcontroller authcontroller = Get.find<Authcontroller>();
   final ProfileController profileController = Get.put(ProfileController());
 
   final categoryimages = [
@@ -35,6 +37,7 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     homecontroller.getAllCategories();
     profileController.getUserProfile();
+    authcontroller.updateFcmToken();
   }
 
   @override

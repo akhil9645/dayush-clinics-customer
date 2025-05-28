@@ -200,6 +200,8 @@ class CategoryTab extends StatelessWidget {
                           isAvaialble: doctor['is_available'],
                           consultationFee: doctor['consultation_fee'],
                           doctorDetail: doctor,
+                          designation: doctor['designation'],
+                          languages: doctor['languages'],
                         );
                       },
                     )
@@ -220,12 +222,16 @@ class DoctorCard extends StatelessWidget {
   bool? isAvaialble = true;
   dynamic doctorDetail;
   dynamic consultationFee;
+  String? designation;
+  String? languages;
   DoctorCard(
       {super.key,
       this.experience,
       this.name,
       this.consultationFee,
       this.isAvaialble,
+      this.designation,
+      this.languages,
       this.doctorDetail});
 
   final DoctorCategoryController doctorCategoryController =
@@ -298,7 +304,7 @@ class DoctorCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'Senior Consultant',
+                    designation ?? 'Senior Consultant',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 12.sp,
@@ -306,17 +312,60 @@ class DoctorCard extends StatelessWidget {
                   ),
                   SizedBox(height: 5.h),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Experience
-                      Icon(Icons.person,
-                          color: Constants.buttoncolor, size: 24.sp),
-                      Text(
-                        '${experience ?? ''} years of Experience',
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.grey[600],
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.person,
+                              color: Constants.buttoncolor, size: 20.sp),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Experience',
+                                style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                '$experience Years',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.language_rounded,
+                              color: Constants.buttoncolor, size: 20.sp),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Languages',
+                                style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                languages ?? '',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
                     ],
                   ),
                   Row(

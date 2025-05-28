@@ -17,6 +17,7 @@ class Authcontroller extends GetxController {
   Rx<bool> isobscured = true.obs;
   Rx<bool> isobscuredForConfirm = true.obs;
   var countdown = 300.obs;
+  String? fcmtoken;
 
   void startTimer() {
     Timer.periodic(Duration(seconds: 1), (timer) {
@@ -47,7 +48,9 @@ class Authcontroller extends GetxController {
       };
 
       var response = await DioHandler.dioPOSTNoAuth(
-          body: jsonEncode(body), endpoint: 'accounts/register/');
+        body: jsonEncode(body),
+        endpoint: 'accounts/register/',
+      );
 
       if (response != null) {
         log(jsonEncode(response));
@@ -59,45 +62,48 @@ class Authcontroller extends GetxController {
           // Navigate to OTP screen
           isLoading.value = false;
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VerifyOtp(
-                  email: response["email"],
-                  from: 'userverify',
-                ),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  VerifyOtp(email: response["email"], from: 'userverify'),
+            ),
+          );
         } else if (response.containsKey("message") &&
             response["message"] ==
                 "User successfully created. OTP sent to email.") {
           // Navigate to OTP screen for newly created user
           isLoading.value = false;
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VerifyOtp(
-                  email: response["email"],
-                  from: 'userverify',
-                ),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  VerifyOtp(email: response["email"], from: 'userverify'),
+            ),
+          );
         } else {
           isLoading.value = false;
           // Show error message if no expected response is found
           ScaffoldMessenger.of(context).showSnackBar(
-            CommonWidgets()
-                .snackBarinfo(response["message"] ?? "Something went wrong"),
+            CommonWidgets().snackBarinfo(
+              response["message"] ?? "Something went wrong",
+            ),
           );
         }
       } else {
         log("Response is null");
         isLoading.value = false;
-        ScaffoldMessenger.of(context).showSnackBar(CommonWidgets()
-            .snackBarinfo("Failed to register. Please try again."));
+        ScaffoldMessenger.of(context).showSnackBar(
+          CommonWidgets().snackBarinfo("Failed to register. Please try again."),
+        );
       }
     } catch (e) {
       log("Error: $e");
       isLoading.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(CommonWidgets().snackBarinfo(
-          "An error occurred. Please check your internet connection."));
+      ScaffoldMessenger.of(context).showSnackBar(
+        CommonWidgets().snackBarinfo(
+          "An error occurred. Please check your internet connection.",
+        ),
+      );
     } finally {
       isLoading.value = false;
     }
@@ -107,10 +113,7 @@ class Authcontroller extends GetxController {
     try {
       isLoading.value = true;
 
-      var body = {
-        "email": email,
-        "password": password,
-      };
+      var body = {"email": email, "password": password, "fcm_token": fcmtoken};
 
       log('Request Body: $body');
 
@@ -128,8 +131,9 @@ class Authcontroller extends GetxController {
       } else {
         log("Login Failed: ${response.toString()}");
         isLoading.value = false;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(CommonWidgets().snackBarinfo(response['message']));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(CommonWidgets().snackBarinfo(response['message']));
         return false;
       }
     } catch (e) {
@@ -142,7 +146,10 @@ class Authcontroller extends GetxController {
   }
 
   Future<void> validateOtp(
-      String officialMailId, String otp, BuildContext context) async {
+    String officialMailId,
+    String otp,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
       final response = await DioHandler.dioPOSTNoAuth(
@@ -169,16 +176,18 @@ class Authcontroller extends GetxController {
         isLoading.value = false;
         log("Response is null");
         ScaffoldMessenger.of(context).showSnackBar(
-          CommonWidgets()
-              .snackBarinfo("Something went wrong. Please try again."),
+          CommonWidgets().snackBarinfo(
+            "Something went wrong. Please try again.",
+          ),
         );
       }
     } catch (e) {
       isLoading.value = false;
       log("Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        CommonWidgets()
-            .snackBarinfo("An error occurred. Please check your connection."),
+        CommonWidgets().snackBarinfo(
+          "An error occurred. Please check your connection.",
+        ),
       );
     } finally {
       isLoading.value = false;
@@ -201,13 +210,12 @@ class Authcontroller extends GetxController {
           // ✅ Navigate to login screen on successful activation
           isLoading.value = false;
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VerifyOtp(
-                  email: emailId,
-                  from: 'forgetpass',
-                ),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  VerifyOtp(email: emailId, from: 'forgetpass'),
+            ),
+          );
         } else {
           // ❌ Show error message if OTP is invalid or another issue occurs
           isLoading.value = false;
@@ -219,8 +227,9 @@ class Authcontroller extends GetxController {
         isLoading.value = false;
         log("Response is null");
         ScaffoldMessenger.of(context).showSnackBar(
-          CommonWidgets()
-              .snackBarinfo("Something went wrong. Please try again."),
+          CommonWidgets().snackBarinfo(
+            "Something went wrong. Please try again.",
+          ),
         );
       }
     } catch (e) {
@@ -231,7 +240,10 @@ class Authcontroller extends GetxController {
   }
 
   Future<void> forgetPassvalidateOtp(
-      String officialMailId, String otp, BuildContext context) async {
+    String officialMailId,
+    String otp,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
       final response = await DioHandler.dioPOSTNoAuth(
@@ -247,8 +259,10 @@ class Authcontroller extends GetxController {
                 "OTP verified. You can now reset your password.") {
           // ✅ Navigate to login screen on successful activation
           isLoading.value = false;
-          Get.toNamed(PageRoutes.createnewpassword,
-              arguments: {'email': officialMailId});
+          Get.toNamed(
+            PageRoutes.createnewpassword,
+            arguments: {'email': officialMailId},
+          );
         } else {
           // ❌ Show error message if OTP is invalid or another issue occurs
           isLoading.value = false;
@@ -260,24 +274,30 @@ class Authcontroller extends GetxController {
         isLoading.value = false;
         log("Response is null");
         ScaffoldMessenger.of(context).showSnackBar(
-          CommonWidgets()
-              .snackBarinfo("Something went wrong. Please try again."),
+          CommonWidgets().snackBarinfo(
+            "Something went wrong. Please try again.",
+          ),
         );
       }
     } catch (e) {
       isLoading.value = false;
       log("Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        CommonWidgets()
-            .snackBarinfo("An error occurred. Please check your connection."),
+        CommonWidgets().snackBarinfo(
+          "An error occurred. Please check your connection.",
+        ),
       );
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> forgetResetPassword(String email, String password,
-      String confirmpassword, BuildContext context) async {
+  Future<void> forgetResetPassword(
+    String email,
+    String password,
+    String confirmpassword,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
       final response = await DioHandler.dioPOSTNoAuth(
@@ -285,7 +305,7 @@ class Authcontroller extends GetxController {
         body: json.encode({
           'email': email,
           'new_password': password,
-          'confirm_password': confirmpassword
+          'confirm_password': confirmpassword,
         }),
       );
 
@@ -301,27 +321,50 @@ class Authcontroller extends GetxController {
           // ❌ Show error message if OTP is invalid or another issue occurs
           isLoading.value = false;
           ScaffoldMessenger.of(context).showSnackBar(
-            CommonWidgets()
-                .snackBarinfo(response["message"] ?? "Something went wrong."),
+            CommonWidgets().snackBarinfo(
+              response["message"] ?? "Something went wrong.",
+            ),
           );
         }
       } else {
         isLoading.value = false;
         log("Response is null");
         ScaffoldMessenger.of(context).showSnackBar(
-          CommonWidgets()
-              .snackBarinfo("Something went wrong. Please try again."),
+          CommonWidgets().snackBarinfo(
+            "Something went wrong. Please try again.",
+          ),
         );
       }
     } catch (e) {
       isLoading.value = false;
       log("Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        CommonWidgets()
-            .snackBarinfo("An error occurred. Please check your connection."),
+        CommonWidgets().snackBarinfo(
+          "An error occurred. Please check your connection.",
+        ),
       );
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  updateFcmToken() async {
+    try {
+      if (fcmtoken != null && fcmtoken!.isNotEmpty) {
+        var body = {"fcm_token": fcmtoken};
+        var response = await DioHandler.dioPOSTWithAuth(
+            endpoint: 'accounts/update-fcm-token/', body: body);
+        if (response != null &&
+            response['message'] == 'FCM token updated successfully.') {
+          log("Update Fcm response ${response.toString()}");
+        } else {
+          log("Failed to update fcm token ${response.toString()}");
+        }
+      } else {
+        log("Fcm token is empty");
+      }
+    } catch (e) {
+      log("Exception: $e");
     }
   }
 }
