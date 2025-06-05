@@ -18,17 +18,51 @@ import 'package:permission_handler/permission_handler.dart';
 final FlutterLocalNotificationsPlugin localNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+Future<void> _createNotificationChannel() async {
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'call_channel',
+    'Call Notifications',
+    description: 'Channel for video call notifications',
+    importance: Importance.max,
+    playSound: true,
+    sound:
+        const UriAndroidNotificationSound('content://settings/system/ringtone'),
+    enableVibration: true,
+    vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
+  );
+  await localNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+  developer.log('✅ Notification channel created');
+}
+
 Future<void> _backgroundHandler(RemoteMessage message) async {
   developer.log('📩 [Background] Notification: ${message.notification?.title}');
   developer.log('📄 [Background] Data: ${message.data}');
   if (message.data['type'] == 'video_call') {
-    await _showCallNotification(message.data);
+    // Prevent system tray from showing notification
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: false,
+      badge: false,
+      sound: false,
+    );
+    await _showCallNotification({
+      'type': 'video_call',
+      'consultation_id': message.data['consultation_id'] ?? '',
+      'title': message.notification?.title ??
+          message.data['title'] ??
+          'Incoming Video Call',
+      'body': message.notification?.body ??
+          message.data['body'] ??
+          'Consultation ID: ${message.data['consultation_id']}',
+    });
   }
 }
 
 Future<void> _showCallNotification(Map<String, dynamic> data) async {
   try {
-    // Use the default phone call ringtone
     AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'call_channel',
       'Call Notifications',
@@ -42,17 +76,53 @@ Future<void> _showCallNotification(Map<String, dynamic> data) async {
       timeoutAfter: 60000,
       playSound: true,
       sound: const UriAndroidNotificationSound(
-          'content://settings/system/ringtone'), // Default phone call ringtone
+          'content://settings/system/ringtone'),
       enableVibration: true,
       vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
       category: AndroidNotificationCategory.call,
+      icon: '@drawable/ic_launcher_foreground',
       ongoing: true,
       actions: [
-        AndroidNotificationAction('accept', 'Accept', showsUserInterface: true),
+        AndroidNotificationAction(
+          'accept',
+          'Accept',
+          showsUserInterface: true,
+        ),
+      ],
+    );
+    // Fallback notification without full-screen intent
+    AndroidNotificationDetails fallbackDetails = AndroidNotificationDetails(
+      'call_channel',
+      'Call Notifications',
+      channelDescription: 'Channel for video call notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'Incoming Call',
+      channelShowBadge: false,
+      autoCancel: false,
+      timeoutAfter: 60000,
+      playSound: true,
+      sound: const UriAndroidNotificationSound(
+          'content://settings/system/ringtone'),
+      enableVibration: true,
+      vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
+      category: AndroidNotificationCategory.call,
+      icon: '@drawable/ic_launcher_foreground',
+      ongoing: true,
+      actions: [
+        AndroidNotificationAction(
+          'accept',
+          'Accept',
+          showsUserInterface: true,
+        ),
       ],
     );
     NotificationDetails platformDetails =
         NotificationDetails(android: androidDetails);
+    NotificationDetails fallbackPlatformDetails =
+        NotificationDetails(android: fallbackDetails);
+
+    // Try full-screen intent first
     await localNotificationsPlugin.show(
       0,
       data['title'] ?? 'Incoming Video Call',
@@ -60,7 +130,19 @@ Future<void> _showCallNotification(Map<String, dynamic> data) async {
       platformDetails,
       payload: jsonEncode(data),
     );
-    developer.log('✅ Call notification shown with default call ringtone');
+    developer.log('✅ Call notification shown with full-screen intent');
+
+    // Fallback if full-screen intent fails
+    if (await Permission.systemAlertWindow.isDenied) {
+      await localNotificationsPlugin.show(
+        0,
+        data['title'] ?? 'Incoming Video Call',
+        data['body'] ?? 'Consultation ID: ${data['consultation_id']}',
+        fallbackPlatformDetails,
+        payload: jsonEncode(data),
+      );
+      developer.log('✅ Fallback notification shown without full-screen intent');
+    }
   } catch (e, stackTrace) {
     developer.log('Error showing call notification: $e',
         stackTrace: stackTrace, level: 1000);
@@ -68,14 +150,24 @@ Future<void> _showCallNotification(Map<String, dynamic> data) async {
 }
 
 void _navigateToVideoCall(Map<String, dynamic> data) {
-  Get.toNamed(
-    PageRoutes.videocallmainpage,
-    arguments: {
-      'consultationDetails': {
-        'id': data['consultation_id'],
-      },
-    },
-  );
+  try {
+    if (data['consultation_id'] != null) {
+      Get.offAllNamed(
+        PageRoutes.videocallmainpage,
+        arguments: {
+          'consultationDetails': {'id': data['consultation_id']},
+        },
+      );
+    } else {
+      developer.log('Invalid consultation_id in notification payload',
+          level: 1000);
+      Get.snackbar('Error', 'Invalid consultation ID');
+    }
+  } catch (e, stackTrace) {
+    developer.log('Error navigating to video call: $e',
+        stackTrace: stackTrace, level: 1000);
+    Get.snackbar('Error', 'Failed to navigate to video call');
+  }
 }
 
 Future<void> main() async {
@@ -85,6 +177,8 @@ Future<void> main() async {
   try {
     await Firebase.initializeApp();
     developer.log("✅ Firebase Initialized Successfully");
+
+    await _createNotificationChannel();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -96,10 +190,9 @@ Future<void> main() async {
         try {
           if (response.payload != null) {
             final payload = jsonDecode(response.payload!);
-            if (payload['type'] == 'video_call') {
-              if (response.actionId == 'accept') {
-                _navigateToVideoCall(payload);
-              }
+            if (payload['type'] == 'video_call' &&
+                response.actionId == 'accept') {
+              _navigateToVideoCall(payload);
             }
           }
         } catch (e, stackTrace) {
@@ -108,24 +201,6 @@ Future<void> main() async {
         }
       },
     );
-
-    // Update the notification channel to use the default call ringtone
-    AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'call_channel',
-      'Call Notifications',
-      description: 'Channel for video call notifications',
-      importance: Importance.max,
-      playSound: true,
-      enableVibration: true,
-      sound: const UriAndroidNotificationSound(
-          'content://settings/system/ringtone'), // Default phone call ringtone
-      vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
-    );
-    await localNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-    developer.log('✅ Notification channel created with default call ringtone');
 
     FirebaseMessaging.onBackgroundMessage(_backgroundHandler);
 
@@ -170,6 +245,7 @@ class _MyAppState extends State<MyApp> {
 
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
       authcontroller.fcmtoken = fcmToken;
+      developer.log('🔑 FCM Token Refreshed: $fcmToken');
     }).onError((e, stackTrace) {
       developer.log('Error on token refresh: $e',
           stackTrace: stackTrace, level: 1000);
@@ -185,12 +261,15 @@ class _MyAppState extends State<MyApp> {
           developer.log('✅ Android User granted notification permission');
         } else {
           developer.log('❌ Android User denied notification permission');
+          Get.snackbar('Permission Required',
+              'Please enable notifications in settings for call functionality',
+              snackPosition: SnackPosition.BOTTOM);
         }
       } else {
         developer.log('✅ Android Notification permission already granted');
       }
     } catch (e, stackTrace) {
-      developer.log("⚠ Error requesting notification permissions: $e",
+      developer.log("⚠ Error requesting permissions: $e",
           stackTrace: stackTrace, level: 1000);
     }
   }
@@ -204,9 +283,10 @@ class _MyAppState extends State<MyApp> {
         if (message.data['type'] == 'video_call') {
           await _showCallNotification({
             'type': 'video_call',
-            'consultation_id': message.data['consultation_id'],
-            'title': message.notification?.title,
-            'body': message.notification?.body,
+            'consultation_id': message.data['consultation_id'] ?? '',
+            'title': message.notification?.title ?? 'Incoming Video Call',
+            'body': message.notification?.body ??
+                'Consultation ID: ${message.data['consultation_id']}',
           });
         }
       });
@@ -250,45 +330,23 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _navigateToVideoCall(Map<String, dynamic> data) {
-    try {
-      if (data['consultation_id'] != null) {
-        Get.offAllNamed(
-          PageRoutes.videocallmainpage,
-          arguments: {
-            'consultationDetails': {'id': data['consultation_id']},
-          },
-        );
-      } else {
-        developer.log('Invalid consultation_id in notification payload',
-            level: 1000);
-        Get.snackbar('Error', 'Invalid consultation ID');
-      }
-    } catch (e, stackTrace) {
-      developer.log('Error navigating to video call: $e',
-          stackTrace: stackTrace, level: 1000);
-      Get.snackbar('Error', 'Failed to navigate to video call');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: Size(360, 690),
+      designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          initialBinding: BindingsBuilder(
-            () {
-              Get.put(Appcontroller());
-            },
-          ),
+          initialBinding: BindingsBuilder(() {
+            Get.put(Appcontroller());
+          }),
           theme: ThemeData(
-              useMaterial3: true,
-              primarySwatch: Colors.green,
-              fontFamily: GoogleFonts.dmSans().fontFamily),
+            useMaterial3: true,
+            primarySwatch: Colors.green,
+            fontFamily: GoogleFonts.dmSans().fontFamily,
+          ),
           home: Splashscreen(),
           getPages: getpages,
         );

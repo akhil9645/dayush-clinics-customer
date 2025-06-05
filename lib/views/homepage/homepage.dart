@@ -22,14 +22,14 @@ class _HomepageState extends State<Homepage> {
   final Authcontroller authcontroller = Get.find<Authcontroller>();
   final ProfileController profileController = Get.put(ProfileController());
 
-  final categoryimages = [
-    'assets/images/Ayurveda.560eaf93.PNG',
-    'assets/images/homeopathy logo.b7b3f219.PNG',
-    'assets/images/naturopathy.7f0d5bb3.PNG',
-    'assets/images/siddha medicine.972ef1a6.PNG',
-    'assets/images/homeopathy logo.b7b3f219.PNG',
-    'assets/images/Yoga Therapy.991a3c30 (2).png'
-  ];
+  final Map<String, String> categoryImageMap = {
+    'Ayurveda': 'assets/images/Ayurveda.560eaf93.PNG',
+    'Homeopathy': 'assets/images/homeopathy logo.b7b3f219.PNG',
+    'Naturopathy': 'assets/images/naturopathy.7f0d5bb3.PNG',
+    'Sidha': 'assets/images/siddha medicine.972ef1a6.PNG',
+    'Unani': 'assets/images/eaafbf8fc91b19a4f82085371267ec307b802460.png',
+    'Yoga and Meditation': 'assets/images/Yoga Therapy.991a3c30 (2).png',
+  };
 
   final GlobalKey<ScaffoldState> _scafoldkey = GlobalKey<ScaffoldState>();
   @override
@@ -54,13 +54,11 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {
-                Get.toNamed(PageRoutes.notificationview);
-              },
-              icon: Icon(
-                Icons.notifications,
-                size: 24.w,
-              )),
+            onPressed: () {
+              Get.toNamed(PageRoutes.notificationview);
+            },
+            icon: Icon(Icons.notifications, size: 24.w),
+          ),
           Padding(
             padding: EdgeInsets.only(right: 15.r),
             child: GestureDetector(
@@ -74,7 +72,7 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
             ),
-          )
+          ),
         ],
         leading: Padding(
           padding: EdgeInsets.only(left: 15.r),
@@ -82,11 +80,7 @@ class _HomepageState extends State<Homepage> {
             onTap: () {
               _scafoldkey.currentState?.openDrawer();
             },
-            child: Icon(
-              Icons.menu_rounded,
-              color: Colors.black,
-              size: 24.w,
-            ),
+            child: Icon(Icons.menu_rounded, color: Colors.black, size: 24.w),
           ),
         ),
         title: Padding(
@@ -109,26 +103,25 @@ class _HomepageState extends State<Homepage> {
               () => Text(
                 'Hi ${profileController.username}',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600),
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             Text(
               'What are you looking for?',
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 12.sp, color: Colors.grey),
             ),
             Constants().h10,
             Constants().h10,
             Text(
               'Select Category',
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600),
+                color: Colors.black,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             Constants().h10,
             Obx(
@@ -144,10 +137,16 @@ class _HomepageState extends State<Homepage> {
                 ),
                 itemBuilder: (context, index) {
                   var data = homecontroller.categories[index];
+                  String categoryName =
+                      homecontroller.categories[index]['name'];
+                  String imagePath = categoryImageMap[categoryName] ??
+                      'assets/images/Ayurveda.560eaf93.PNG';
+
                   return Container(
                     decoration: BoxDecoration(
-                        color: Constants.buttoncolor,
-                        borderRadius: BorderRadius.circular(10.r)),
+                      color: Constants.buttoncolor,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -169,13 +168,14 @@ class _HomepageState extends State<Homepage> {
                                       // Category Image
                                       CircleAvatar(
                                         radius: 30.r,
-                                        backgroundImage:
-                                            AssetImage(categoryimages[index]),
+                                        backgroundImage: AssetImage(
+                                          imagePath,
+                                        ),
                                       ),
                                       SizedBox(height: 15.h),
                                       // Category Name
                                       Text(
-                                        data['name'],
+                                        categoryName,
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 18.sp,
@@ -199,15 +199,17 @@ class _HomepageState extends State<Homepage> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // Close the dialog
+                                        Navigator.of(
+                                          context,
+                                        ).pop(); // Close the dialog
                                       },
                                       child: Text(
                                         'Close',
                                         style: TextStyle(
-                                            color: Constants.buttoncolor,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w600),
+                                          color: Constants.buttoncolor,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                     CommonWidgets().commonbutton(
@@ -224,9 +226,10 @@ class _HomepageState extends State<Homepage> {
                                       ),
                                       ontap: () {
                                         Get.toNamed(
-                                            PageRoutes.categorydetailpage);
+                                          PageRoutes.categorydetailpage,
+                                        );
                                       },
-                                    )
+                                    ),
                                   ],
                                 );
                               },
@@ -234,16 +237,17 @@ class _HomepageState extends State<Homepage> {
                           },
                           child: CircleAvatar(
                             radius: 24.r,
-                            backgroundImage: AssetImage(categoryimages[index]),
+                            backgroundImage: AssetImage(imagePath),
                           ),
                         ),
                         SizedBox(height: 5.h),
                         Text(
                           data['name'],
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12.sp),
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12.sp,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         Padding(
@@ -253,17 +257,19 @@ class _HomepageState extends State<Homepage> {
                                 Get.toNamed(PageRoutes.categorydetailpage),
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12).r),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12).r,
+                              ),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(4),
                                   child: Text(
                                     'Consult Now',
                                     style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w600),
+                                      color: Colors.black,
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -282,9 +288,10 @@ class _HomepageState extends State<Homepage> {
             Text(
               'Activities',
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600),
+                color: Colors.black,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             Constants().h10,
             ListView.builder(
@@ -295,7 +302,7 @@ class _HomepageState extends State<Homepage> {
               itemBuilder: (context, index) {
                 var images = [
                   'assets/images/0e4da77312f3cdaf1fb4ca76413499dc.png',
-                  'assets/images/2195c1d242926995266846621b834170.png'
+                  'assets/images/2195c1d242926995266846621b834170.png',
                 ];
                 var titles = ['Daily Live Yoga Classes', '1-Day workshop'];
                 var subtitle = ['Morning-6.30-7.30 Am', 'Benefits of Ayurveda'];
@@ -304,15 +311,16 @@ class _HomepageState extends State<Homepage> {
                   padding: const EdgeInsets.only(bottom: 10).r,
                   child: GestureDetector(
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(CommonWidgets()
-                          .snackBarinfo('This Feature will Coming Soon',
-                              color: Colors.green));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        CommonWidgets().snackBarinfo(
+                          'This Feature will Coming Soon',
+                          color: Colors.green,
+                        ),
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                        ),
+                        border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Padding(
@@ -337,22 +345,27 @@ class _HomepageState extends State<Homepage> {
                                 Text(
                                   titles[index],
                                   style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600),
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                                 Text(
                                   subtitle[index],
                                   style: TextStyle(
-                                      color: Colors.grey, fontSize: 12.sp),
+                                    color: Colors.grey,
+                                    fontSize: 12.sp,
+                                  ),
                                 ),
                                 Text(
                                   text[index],
                                   style: TextStyle(
-                                      color: Colors.grey, fontSize: 12.sp),
+                                    color: Colors.grey,
+                                    fontSize: 12.sp,
+                                  ),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -376,8 +389,9 @@ class WellnessSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: const Color(0xFFE6F5EB),
-          borderRadius: BorderRadius.circular(12).r),
+        color: const Color(0xFFE6F5EB),
+        borderRadius: BorderRadius.circular(12).r,
+      ),
       padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 30.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,20 +506,22 @@ class WellnessItem extends StatelessWidget {
                     TextSpan(
                       text: capitalizedTitle[0],
                       style: TextStyle(
-                          color: const Color(0xFF1A3C34),
-                          fontSize:
-                              20.sp, // Larger font size for the first letter
-                          fontWeight: FontWeight.bold,
-                          fontFamily: GoogleFonts.dmSans().fontFamily),
+                        color: const Color(0xFF1A3C34),
+                        fontSize:
+                            20.sp, // Larger font size for the first letter
+                        fontWeight: FontWeight.bold,
+                        fontFamily: GoogleFonts.dmSans().fontFamily,
+                      ),
                     ),
                     // Rest of the title
                     TextSpan(
                       text: capitalizedTitle.substring(1),
                       style: TextStyle(
-                          color: const Color(0xFF1A3C34),
-                          fontSize: 16.sp, // Original font size for the rest
-                          fontWeight: FontWeight.bold,
-                          fontFamily: GoogleFonts.dmSans().fontFamily),
+                        color: const Color(0xFF1A3C34),
+                        fontSize: 16.sp, // Original font size for the rest
+                        fontWeight: FontWeight.bold,
+                        fontFamily: GoogleFonts.dmSans().fontFamily,
+                      ),
                     ),
                   ],
                 ),
@@ -522,7 +538,7 @@ class WellnessItem extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
