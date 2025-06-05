@@ -18,6 +18,7 @@ class Authcontroller extends GetxController {
   Rx<bool> isobscuredForConfirm = true.obs;
   var countdown = 300.obs;
   String? fcmtoken;
+  Rx<bool> isChecked = false.obs;
 
   void startTimer() {
     Timer.periodic(Duration(seconds: 1), (timer) {

@@ -15,6 +15,7 @@ import 'package:dayush_clinic/views/profilepage/faq_view/faq_view.dart';
 import 'package:dayush_clinic/views/profilepage/profile_screen.dart';
 import 'package:dayush_clinic/views/scheduledappointmentspage/scheduledappointmentspage.dart';
 import 'package:dayush_clinic/views/splashscreen/splashscreendialogue.dart';
+import 'package:dayush_clinic/views/terms&privacy_view/terms_and_conditions.dart';
 import 'package:dayush_clinic/views/videocall/videocallmain.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +25,8 @@ class PageRoutes {
   static const signup = '/signup';
   static const forgetpassword = '/forgetpassword';
   static const createnewpassword = '/createnewpassword';
-  static const termsandconditions = '/termsandconditions';
+  static const termsandconditionsprivacypolicy =
+      '/termsandconditionsprivacypolicy';
   static const homepage = '/homepage';
   static const videocallmainpage = '/videocallmainpage';
   static const categorydetailpage = '/categorydetailpage';
@@ -137,6 +139,11 @@ List<GetPage<dynamic>> getpages = [
   GetPage(
       name: PageRoutes.viewPrescription,
       page: () => ViewPrescription(),
+      transition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 200)),
+  GetPage(
+      name: PageRoutes.termsandconditionsprivacypolicy,
+      page: () => TermsAndConditions(),
       transition: Transition.cupertino,
       transitionDuration: Duration(milliseconds: 200)),
 ];

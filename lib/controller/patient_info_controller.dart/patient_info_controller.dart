@@ -4,6 +4,7 @@ import 'package:dayush_clinic/services/dio_handler.dart';
 import 'package:get/get.dart';
 
 class PatientInfoController extends GetxController {
+  Rx<bool> isCheckedAgreement = false.obs;
   Rx<bool> isLoading = false.obs;
   addPatientInfo(
       {String? patientName,

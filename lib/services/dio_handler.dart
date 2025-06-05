@@ -1,10 +1,16 @@
 import 'dart:developer';
+import 'package:dayush_clinic/controller/appcontroller.dart';
 import 'package:dayush_clinic/services/tokenstorage_Service.dart';
+import 'package:dayush_clinic/utils/routes.dart';
 import 'package:dio/dio.dart';
+import 'package:get/get.dart' as getx;
 
 class DioHandler {
-  // static const baseUrl = 'http://65.1.92.125:8080/';
-  static const baseUrl = 'https://3562-117-243-247-137.ngrok-free.app/';
+  static const baseUrl = 'http://65.1.92.125:8080/';
+  // static const baseUrl = 'https://7922-202-83-55-217.ngrok-free.app/';
+
+  static final TokenStorageService _tokenStorage = TokenStorageService();
+
   static Dio dio = Dio(BaseOptions(
     validateStatus: (status) {
       if (status == 401) {
@@ -124,10 +130,35 @@ class DioHandler {
             'message': response.data['message'] ?? 'Invalid input'
           };
         case 401:
-          return {
-            'error': 'Unauthorized',
-            'message': response.data['message'] ?? 'Invalid credentials'
-          };
+          // Attempt to refresh token
+          bool refreshed =
+              await getx.Get.find<Appcontroller>().refreshAccessToken();
+          if (refreshed) {
+            // Retry the original request with the new token
+            token = await _tokenStorage.getToken();
+            dio.options.headers["Authorization"] = "Bearer $token";
+            Response retryResponse = await dio
+                .post(
+                  baseUrl + endpoint,
+                  data: body,
+                  options: Options(headers: header),
+                )
+                .timeout(const Duration(seconds: 60));
+            return retryResponse.statusCode == 200 ||
+                    retryResponse.statusCode == 201
+                ? retryResponse.data
+                : {
+                    'error': 'Retry Failed',
+                    'message': retryResponse.data['message'] ??
+                        'Request failed after token refresh'
+                  };
+          } else {
+            // Clear tokens and redirect to login
+            await _tokenStorage.deleteToken();
+            await _tokenStorage.deleteRefreshToken();
+            getx.Get.offAllNamed(PageRoutes.splashscreendialogue);
+            return {'error': 'Unauthorized', 'message': 'Token refresh failed'};
+          }
         case 403:
           return {
             'error': 'Forbidden',
@@ -187,10 +218,33 @@ class DioHandler {
             'message': response.data['message'] ?? 'Invalid input'
           };
         case 401:
-          return {
-            'error': 'Unauthorized',
-            'message': response.data['message'] ?? 'Invalid credentials'
-          };
+          // Attempt to refresh token
+          bool refreshed =
+              await getx.Get.find<Appcontroller>().refreshAccessToken();
+          if (refreshed) {
+            // Retry the original request with the new token
+            token = await _tokenStorage.getToken();
+            dio.options.headers["Authorization"] = "Bearer $token";
+            Response retryResponse = await dio
+                .get(
+                  baseUrl + endpoint,
+                )
+                .timeout(const Duration(seconds: 60));
+            return retryResponse.statusCode == 200 ||
+                    retryResponse.statusCode == 201
+                ? retryResponse.data
+                : {
+                    'error': 'Retry Failed',
+                    'message': retryResponse.data['message'] ??
+                        'Request failed after token refresh'
+                  };
+          } else {
+            // Clear tokens and redirect to login
+            await _tokenStorage.deleteToken();
+            await _tokenStorage.deleteRefreshToken();
+            getx.Get.offAllNamed(PageRoutes.splashscreendialogue);
+            return {'error': 'Unauthorized', 'message': 'Token refresh failed'};
+          }
         case 403:
           return {
             'error': 'Forbidden',

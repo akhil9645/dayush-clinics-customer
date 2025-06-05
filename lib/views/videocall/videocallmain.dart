@@ -16,7 +16,7 @@ class Videocallmain extends StatefulWidget {
 
 class _VideocallmainState extends State<Videocallmain> {
   final BookAppointmentController bookAppointmentController =
-      Get.find<BookAppointmentController>();
+      Get.put(BookAppointmentController());
   int? _remoteUid;
   bool _localUserJoined = false;
   RtcEngine? _engine;
@@ -35,9 +35,11 @@ class _VideocallmainState extends State<Videocallmain> {
   Future<void> _initialize() async {
     try {
       final data = widget.arguments as Map<String, dynamic>;
-      final consultationId = data['consultationId'];
+      final consultationId = data['consultationDetails']['id'].toString();
       final success = await bookAppointmentController.getAgoraToken(
-          consultaionId: consultationId);
+          consultaionId: consultationId,
+          isBooking: data['consultationDetails']['is_booking'],
+          isCalling: data['consultationDetails']['is_calling']);
       if (success && bookAppointmentController.agoraTokenResponse.isNotEmpty) {
         final agoraData = bookAppointmentController.agoraTokenResponse;
         _channelName = agoraData['channel_name'];

@@ -202,6 +202,7 @@ class CategoryTab extends StatelessWidget {
                           doctorDetail: doctor,
                           designation: doctor['designation'],
                           languages: doctor['languages'],
+                          description: doctor['description'],
                         );
                       },
                     )
@@ -216,7 +217,7 @@ class CategoryTab extends StatelessWidget {
   }
 }
 
-class DoctorCard extends StatelessWidget {
+class DoctorCard extends StatefulWidget {
   String? name;
   String? experience;
   bool? isAvaialble = true;
@@ -224,6 +225,7 @@ class DoctorCard extends StatelessWidget {
   dynamic consultationFee;
   String? designation;
   String? languages;
+  String? description;
   DoctorCard(
       {super.key,
       this.experience,
@@ -232,17 +234,42 @@ class DoctorCard extends StatelessWidget {
       this.isAvaialble,
       this.designation,
       this.languages,
+      this.description,
       this.doctorDetail});
 
+  @override
+  State<DoctorCard> createState() => _DoctorCardState();
+}
+
+class _DoctorCardState extends State<DoctorCard> {
   final DoctorCategoryController doctorCategoryController =
       Get.find<DoctorCategoryController>();
 
+  bool _isExpanded = false;
+
+  // Helper function to truncate text to a specified word limit
+  String truncateText(String? text, int wordLimit) {
+    if (text == null || text.isEmpty) return '';
+    List<String> words = text.split(' ');
+    if (words.length <= wordLimit) return text;
+    return '${words.sublist(0, wordLimit).join(' ')}...';
+  }
+
+  // Helper function to check if the description exceeds the word limit
+  bool hasMoreText(String? text, int wordLimit) {
+    if (text == null || text.isEmpty) return false;
+    return text.split(' ').length > wordLimit;
+  }
+
   @override
   Widget build(BuildContext context) {
+    const int wordLimit = 10;
+    String truncatedDescription = truncateText(widget.description, wordLimit);
+    bool showSeeMore = hasMoreText(widget.description, wordLimit);
     String formattedFee = '';
-    if (consultationFee != null) {
+    if (widget.consultationFee != null) {
       try {
-        double fee = double.parse(consultationFee.toString());
+        double fee = double.parse(widget.consultationFee.toString());
         formattedFee = fee.toStringAsFixed(0); // Remove decimal places
       } catch (e) {
         formattedFee = 'N/A'; // Fallback if parsing fails
@@ -260,123 +287,193 @@ class DoctorCard extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.all(10).r,
-        child: Row(
+        child: Column(
           children: [
-            // Doctor Image
-            Container(
-              width: 70.w,
-              height: 70.h,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(
-                      'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png'),
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-            SizedBox(width: 10.w),
-
-            // Doctor Info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Dr. $name",
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '₹$formattedFee per Session',
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    designation ?? 'Senior Consultant',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12.sp,
+            Row(
+              children: [
+                // Doctor Image
+                Container(
+                  width: 70.w,
+                  height: 70.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png'),
+                      fit: BoxFit.fill,
                     ),
                   ),
-                  SizedBox(height: 5.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                SizedBox(width: 10.w),
+
+                // Doctor Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(Icons.person,
-                              color: Constants.buttoncolor, size: 20.sp),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Experience',
-                                style: TextStyle(
-                                    fontSize: 10.sp,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                '$experience Years',
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          )
+                          Text(
+                            "Dr. ${widget.name}",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '₹$formattedFee per Session',
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        widget.designation ?? 'Senior Consultant',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.language_rounded,
-                              color: Constants.buttoncolor, size: 20.sp),
-                          Column(
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Languages',
-                                style: TextStyle(
-                                    fontSize: 10.sp,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600),
+                              Icon(Icons.person,
+                                  color: Constants.buttoncolor, size: 20.sp),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Experience',
+                                    style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    '${widget.experience} Years',
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            spacing: 4.w, // Space between icon and text
+                            children: [
+                              Icon(
+                                Icons.language_rounded,
+                                color: Constants.buttoncolor,
+                                size: 20.sp,
                               ),
-                              Text(
-                                languages ?? '',
-                                style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: Colors.grey[600],
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Languages',
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 100
+                                        .w, // Constrain the width to allow wrapping
+                                    child: Text(
+                                      widget.languages ?? '',
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.grey[600],
+                                      ),
+                                      softWrap: true, // Allow text to wrap
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CommonWidgets().commonbutton(
+                ),
+              ],
+            ),
+            SizedBox(height: 5.h),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _isExpanded ? widget.description ?? '' : truncatedDescription,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                if (showSeeMore)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isExpanded = !_isExpanded;
+                      });
+                    },
+                    child: Text(
+                      _isExpanded ? 'See Less' : 'See More',
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        color: Constants.buttoncolor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CommonWidgets().commonbutton(
+                  buttonheight: 20,
+                  fontsize: 8,
+                  buttonwidth: 120,
+                  title: Text(
+                    'Book Appointment',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  ontap: () {
+                    Get.toNamed(PageRoutes.patientInfo, arguments: {
+                      'from': 'booknow',
+                      'doctor': widget.doctorDetail,
+                      'selectedCategoryId':
+                          doctorCategoryController.selectedCategoryId.value
+                    });
+                  },
+                ),
+                SizedBox(width: 5.w),
+                widget.isAvaialble!
+                    ? CommonWidgets().commonbutton(
                         buttonheight: 20,
                         fontsize: 8,
                         buttonwidth: 100,
                         title: Text(
-                          'Book Appointment',
+                          'Consult Now',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 10.sp,
@@ -385,42 +482,16 @@ class DoctorCard extends StatelessWidget {
                         ),
                         ontap: () {
                           Get.toNamed(PageRoutes.patientInfo, arguments: {
-                            'from': 'booknow',
-                            'doctor': doctorDetail,
+                            'from': 'consultnow',
+                            'doctor': widget.doctorDetail,
                             'selectedCategoryId': doctorCategoryController
                                 .selectedCategoryId.value
                           });
                         },
-                      ),
-                      SizedBox(width: 5.w),
-                      isAvaialble!
-                          ? CommonWidgets().commonbutton(
-                              buttonheight: 20,
-                              fontsize: 8,
-                              buttonwidth: 100,
-                              title: Text(
-                                'Consult Now',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              ontap: () {
-                                Get.toNamed(PageRoutes.patientInfo, arguments: {
-                                  'from': 'consultnow',
-                                  'doctor': doctorDetail,
-                                  'selectedCategoryId': doctorCategoryController
-                                      .selectedCategoryId.value
-                                });
-                              },
-                            )
-                          : SizedBox()
-                    ],
-                  )
-                ],
-              ),
-            ),
+                      )
+                    : SizedBox()
+              ],
+            )
           ],
         ),
       ),

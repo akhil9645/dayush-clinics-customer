@@ -30,6 +30,7 @@ dependencies:
   share_plus: ^9.0.0
   firebase_core: 
   firebase_messaging:
+  flutter_local_notifications:
 
 dev_dependencies:
   flutter_test:
@@ -59,3 +60,5 @@ flutter:
     - assets/images/
     - assets/svg/
     - assets/svg/authicons/
+    - assets/pdf/DAYUSH_CLINICS_Complete_Legal_and_Policy_Document.pdf
+    - assets/pdf/consent of consultation.pdf

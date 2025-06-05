@@ -26,4 +26,8 @@ class TokenStorageService {
   Future<void> deleteRefreshToken() async {
     await _storage.delete(key: 'refreshtoken');
   }
+
+  Future<void> clearTokens() async {
+    await _storage.deleteAll();
+  }
 }

@@ -383,7 +383,7 @@ class _BookAppointmentState extends State<BookAppointment> {
         ]),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20).r,
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30).r,
         child: CommonWidgets().commonbutton(
           title: Text(
             'Pay Now',
@@ -395,8 +395,13 @@ class _BookAppointmentState extends State<BookAppointment> {
           ),
           ontap: () async {
             if (data?['from'] == 'consultnow') {
-              Get.toNamed(PageRoutes.videocallmainpage,
-                  arguments: {"consultationId": data?['bookingId']});
+              Get.toNamed(PageRoutes.videocallmainpage, arguments: {
+                'consultationDetails': {
+                  'id': data?['bookingId'],
+                  'is_booking': false,
+                  'is_calling': true,
+                },
+              });
             } else {
               if (bookAppointmentController.selectedTimeSlot.value.isNotEmpty) {
                 bookAppointmentController.doctorSlotBook(

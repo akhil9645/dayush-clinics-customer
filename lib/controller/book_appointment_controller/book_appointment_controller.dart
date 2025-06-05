@@ -88,11 +88,11 @@ class BookAppointmentController extends GetxController {
     }
   }
 
-  getAgoraToken({var consultaionId}) async {
+  getAgoraToken({var consultaionId, var isBooking, var isCalling}) async {
     try {
       var response = await DioHandler.dioGETWithAuth(
           endpoint:
-              'doctor/generate-agora-token/?consultation_id=$consultaionId');
+              'doctor/generate-agora-token/?consultation_id=$consultaionId&is_booking=$isBooking&is_calling=$isCalling');
       if (response != null) {
         log("Agora Response : ${response.toString()}");
         agoraTokenResponse.value = response;

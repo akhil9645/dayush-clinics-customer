@@ -148,8 +148,63 @@ class SignupPage extends StatelessWidget {
                         color: Constants.buttoncolor),
                     textController: confirmpasswordcontroller),
               ),
+              SizedBox(height: 10.h),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Obx(
+                    () => Checkbox(
+                      value: authcontroller.isChecked.value,
+                      onChanged: (value) {
+                        authcontroller.isChecked.value = value!;
+                      },
+                      activeColor: Constants.buttoncolor,
+                      checkColor: Colors.white,
+                      side: BorderSide(
+                        color: Constants.buttoncolor,
+                        width: 1,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          "I read and agree to the ",
+                          style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed(
+                                PageRoutes.termsandconditionsprivacypolicy,
+                                arguments: {
+                                  'appbartitle': "User Agreement",
+                                  'pdffilepath':
+                                      "assets/pdf/DAYUSH_CLINICS_Complete_Legal_and_Policy_Document.pdf"
+                                });
+                          },
+                          child: Text(
+                            "User Agreement",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 30.h),
               Obx(() => CommonWidgets().commonbutton(
+                    buttonColor: authcontroller.isChecked.value
+                        ? Constants.buttoncolor
+                        : Colors.grey,
                     title: authcontroller.isLoading.value
                         ? LoadingAnimationWidget.fourRotatingDots(
                             color: Colors.white,
@@ -164,7 +219,8 @@ class SignupPage extends StatelessWidget {
                             ),
                           ),
                     ontap: () async {
-                      if (formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate() &&
+                          authcontroller.isChecked.value) {
                         print('button pressed');
                         authcontroller.userRegistration(
                             fullnamecontroller.text,
@@ -173,6 +229,10 @@ class SignupPage extends StatelessWidget {
                             phonnumcontroller.text,
                             confirmpasswordcontroller.text,
                             context);
+                      } else if (authcontroller.isChecked.value == false) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            CommonWidgets().snackBarinfo(
+                                'Please read and accept the User Agreement to continue.'));
                       }
                     },
                   ))

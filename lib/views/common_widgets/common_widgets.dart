@@ -88,7 +88,9 @@ class CommonWidgets {
     );
   }
 
-  AppBar commonappbar(String title) {
+  AppBar commonappbar(
+    String title,
+  ) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,

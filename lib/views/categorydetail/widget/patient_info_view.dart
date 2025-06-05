@@ -222,46 +222,113 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                   keyboardtype: TextInputType.text,
                   maxLines: 4,
                   hintText: 'Enter patient disease description'),
+              SizedBox(height: 20.h),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Obx(
+                    () => Checkbox(
+                      value: patientInfoController.isCheckedAgreement.value,
+                      onChanged: (value) {
+                        patientInfoController.isCheckedAgreement.value = value!;
+                      },
+                      activeColor: Constants.buttoncolor,
+                      checkColor: Colors.white,
+                      side: BorderSide(
+                        color: Constants.buttoncolor,
+                        width: 1,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          "I read and agree to the ",
+                          style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed(
+                                PageRoutes.termsandconditionsprivacypolicy,
+                                arguments: {
+                                  'appbartitle': "Terms & Conditions",
+                                  'pdffilepath':
+                                      "assets/pdf/consent of consultation.pdf"
+                                });
+                          },
+                          child: Text(
+                            "Terms & Conditions",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Text(
+                          "of Dayush Clinics",
+                          style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 20.h)
             ],
           ),
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(left: 20, right: 20, bottom: 20).r,
-        child: CommonWidgets().commonbutton(
-          title: Text(
-            'Continue',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.bold,
+        padding: EdgeInsets.only(left: 20, right: 20, bottom: 30).r,
+        child: Obx(
+          () => CommonWidgets().commonbutton(
+            buttonColor: patientInfoController.isCheckedAgreement.value
+                ? Constants.buttoncolor
+                : Colors.grey,
+            title: Text(
+              'Continue',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          ontap: () async {
-            if (formkey.currentState!.validate()) {
-              var status = await patientInfoController.addPatientInfo(
-                  patientAge: agecontroller.text,
-                  patientName: namecontroller.text,
-                  phoneNum: phonenumcontroller.text,
-                  doctorId: data?['doctor']['id'],
-                  email: emailcontroller.text,
-                  gender: selectedGender,
-                  categoryId: data?['selectedCategoryId'],
-                  amount: data?['doctor']['consultation_fee'],
-                  directConsultation:
-                      data?['from'] == 'consultnow' ? true : false,
-                  patientDescription: descriptioncontroller.text);
-              if (status is int && status > 1) {
-                Get.toNamed(PageRoutes.bookappointment, arguments: {
-                  'from': data?['from'],
-                  'doctor': data?['doctor'],
-                  'selectedCategoryId': data?['selectedCategoryId'],
-                  'bookingId': status
-                });
+            ontap: () async {
+              if (formkey.currentState!.validate() &&
+                  patientInfoController.isCheckedAgreement.value) {
+                var status = await patientInfoController.addPatientInfo(
+                    patientAge: agecontroller.text,
+                    patientName: namecontroller.text,
+                    phoneNum: phonenumcontroller.text,
+                    doctorId: data?['doctor']['id'],
+                    email: emailcontroller.text,
+                    gender: selectedGender,
+                    categoryId: data?['selectedCategoryId'],
+                    amount: data?['doctor']['consultation_fee'],
+                    directConsultation:
+                        data?['from'] == 'consultnow' ? true : false,
+                    patientDescription: descriptioncontroller.text);
+                if (status is int && status > 1) {
+                  Get.toNamed(PageRoutes.bookappointment, arguments: {
+                    'from': data?['from'],
+                    'doctor': data?['doctor'],
+                    'selectedCategoryId': data?['selectedCategoryId'],
+                    'bookingId': status
+                  });
+                }
+              } else if (patientInfoController.isCheckedAgreement.value ==
+                  false) {
+                ScaffoldMessenger.of(context).showSnackBar(CommonWidgets()
+                    .snackBarinfo(
+                        'Please read and accept the Terms & Conditions to continue.'));
               }
-            }
-          },
+            },
+          ),
         ),
       ),
     );

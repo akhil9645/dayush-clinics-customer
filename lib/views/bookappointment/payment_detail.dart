@@ -26,7 +26,7 @@ class _PaymentDetailState extends State<PaymentDetail> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20).r,
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30).r,
           child: CommonWidgets().commonbutton(
             title: Text(
               'Pay Now',

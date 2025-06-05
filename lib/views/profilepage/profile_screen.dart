@@ -55,10 +55,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2.w),
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'assets/images/c0301b58c7a6336d8509dfdd7a892c56.png'),
-                    ),
+                  ),
+                  child: ClipOval(
+                    child: SvgPicture.asset('assets/svg/profile_icon.svg',
+                        width: 80.w, height: 80.h, fit: BoxFit.cover),
                   ),
                 ),
                 Constants().h10,
@@ -123,6 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: 'Logout',
                       color: Colors.red,
                     ),
+                    SizedBox(height: 20.h),
                   ],
                 ),
               ),

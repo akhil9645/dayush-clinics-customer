@@ -1,6 +1,8 @@
+import 'package:dayush_clinic/utils/constants.dart';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class AboutUsView extends StatelessWidget {
   const AboutUsView({super.key});
@@ -9,7 +11,26 @@ class AboutUsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CommonWidgets().commonappbar('About Us'),
+      appBar: AppBar(
+        title: Text(
+          'About Us',
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Constants.buttoncolor,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 10.r),
+          child: GestureDetector(
+            onTap: () => Get.back(),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15).r,
         child: ListView(
