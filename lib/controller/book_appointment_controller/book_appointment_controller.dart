@@ -82,9 +82,15 @@ class BookAppointmentController extends GetxController {
       var response = await DioHandler.dioPOSTWithAuth(
           body: body, endpoint: 'patient/book-appointment/');
       if (response != null) {
-      } else {}
+        log("Response ${response.toString()}");
+        return true;
+      } else {
+        log("Response ${response.toString()}");
+        return false;
+      }
     } catch (e) {
       log("Exception : $e");
+      return false;
     }
   }
 

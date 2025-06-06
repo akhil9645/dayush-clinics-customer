@@ -24,10 +24,10 @@ class _HomepageState extends State<Homepage> {
 
   final Map<String, String> categoryImageMap = {
     'Ayurveda': 'assets/images/Ayurveda.560eaf93.PNG',
-    'Homeopathy': 'assets/images/homeopathy logo.b7b3f219.PNG',
+    'Homeopathy': 'assets/images/be562f64-9904-49d6-9e09-a011ccacb718.jpg',
     'Naturopathy': 'assets/images/naturopathy.7f0d5bb3.PNG',
     'Sidha': 'assets/images/siddha medicine.972ef1a6.PNG',
-    'Unani': 'assets/images/eaafbf8fc91b19a4f82085371267ec307b802460.png',
+    'Unani': 'assets/images/homeopathy logo.b7b3f219.PNG',
     'Yoga and Meditation': 'assets/images/Yoga Therapy.991a3c30 (2).png',
   };
 

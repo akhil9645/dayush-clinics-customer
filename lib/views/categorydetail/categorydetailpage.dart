@@ -190,8 +190,17 @@ class CategoryTab extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       itemCount: doctorCategoryController.doctorsList.length,
                       itemBuilder: (context, index) {
-                        var doctor =
-                            doctorCategoryController.doctorsList[index];
+                        var sortedDoctors =
+                            List.from(doctorCategoryController.doctorsList)
+                              ..sort((a, b) {
+                                bool aAvailable = a['is_available'] ?? false;
+                                bool bAvailable = b['is_available'] ?? false;
+                                return bAvailable
+                                    ? 1
+                                    : -1; // True (available) comes first
+                              });
+                        var doctor = sortedDoctors[index];
+
                         return DoctorCard(
                           experience: doctor['years_of_experience'] != null
                               ? doctor['years_of_experience'].toString()

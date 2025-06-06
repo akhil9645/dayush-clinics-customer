@@ -48,7 +48,7 @@ class Splashscreendialogue extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'Welcome to Your Academic Oasis,',
+                          'Welcome to Dayush Clinics',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.sp,
@@ -58,7 +58,7 @@ class Splashscreendialogue extends StatelessWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'where every keystroke is a\nstep toward excellence',
+                          'Consult Experienced Doctors in Traditional Care, \nAnytime Anywhere',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12.sp,

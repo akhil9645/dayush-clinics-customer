@@ -33,17 +33,6 @@ class _BookAppointmentState extends State<BookAppointment> {
         doctorId: data?['doctor']['id'].toString());
   }
 
-  final List<String> timeSlots = [
-    '11:00 AM',
-    '11:30 AM',
-    '02:00 PM',
-    '02:20 PM',
-    '03:15 PM',
-    '03:45 PM',
-    '05:00 PM',
-    '05:30 PM',
-  ];
-
   @override
   Widget build(BuildContext context) {
     String formattedFee = '';
@@ -168,30 +157,39 @@ class _BookAppointmentState extends State<BookAppointment> {
                               ],
                             ),
                             SizedBox(height: 5.h),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              spacing: 4.w, // Space between icon and text
                               children: [
-                                Icon(Icons.language_rounded,
-                                    color: Constants.buttoncolor, size: 20.sp),
+                                Icon(
+                                  Icons.language_rounded,
+                                  color: Constants.buttoncolor,
+                                  size: 20.sp,
+                                ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       'Languages',
                                       style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    Text(
-                                      '${data?['doctor']['languages'] ?? ''}',
-                                      style: TextStyle(
                                         fontSize: 10.sp,
-                                        color: Colors.grey[600],
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 150.w,
+                                      child: Text(
+                                        '${data?['doctor']['languages'] ?? ''}',
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: Colors.grey[600],
+                                        ),
+                                        softWrap: true, // Allow text to wrap
                                       ),
                                     ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                             SizedBox(height: 4.h),
@@ -404,14 +402,108 @@ class _BookAppointmentState extends State<BookAppointment> {
               });
             } else {
               if (bookAppointmentController.selectedTimeSlot.value.isNotEmpty) {
-                bookAppointmentController.doctorSlotBook(
+                var status = await bookAppointmentController.doctorSlotBook(
                     categoryId: data?['selectedCategoryId'],
                     doctorId: data?['doctor']['id'],
                     consultationId: data?['bookingId'],
                     selectedDate: DateFormat('yyyy-MM-dd')
                         .format(bookAppointmentController.selectedDay.value),
                     timeSlot: bookAppointmentController.selectedTimeSlot.value);
-                Get.offAllNamed(PageRoutes.homepage);
+                if (status == true) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        backgroundColor: Colors.white,
+                        contentPadding: EdgeInsets.all(20.r),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min, // To wrap content
+                          children: [
+                            // Category Image
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white, shape: BoxShape.circle),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/images/Animation - 1749205098384.gif',
+                                ),
+                              ),
+                            ),
+
+                            Text(
+                              'Appointment Booked!',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 10.h),
+                            // Category Description
+                            Text(
+                              'Doctor : ${data?['doctor']['user']['username']}',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 5.h),
+                            Text(
+                              'Treatment : ${data?['doctor']['category_name']}',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 5.h),
+                            Text(
+                              'Booked Date : ${DateFormat('dd/MM/yyyy').format(bookAppointmentController.selectedDay.value)}',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 5.h),
+                            Text(
+                              'Booked Time Slot : ${bookAppointmentController.selectedTimeSlot.toString()}',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          CommonWidgets().commonbutton(
+                            title: Text(
+                              'Done',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            ontap: () {
+                              Get.offAllNamed(PageRoutes.homepage);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                     CommonWidgets().snackBarinfo('Please select time slot'));

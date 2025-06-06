@@ -275,9 +275,9 @@ class _ScheduledappointmentspageState extends State<Scheduledappointmentspage> {
                                 DateFormat('dd MMM yyyy').format(startTime);
                             final formattedTime =
                                 DateFormat('hh:mm a').format(startTime);
-                            final showConsultNowButton =
-                                _isWithinAppointmentSlot(
-                                    data['date'], data['time_slot']);
+                            // final showConsultNowButton =
+                            //     _isWithinAppointmentSlot(
+                            //         data['date'], data['time_slot']);
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
@@ -292,7 +292,7 @@ class _ScheduledappointmentspageState extends State<Scheduledappointmentspage> {
                                 doctorSpecialization:
                                     data['doctor_specialization'] ?? 'N/A',
                                 disease: data['disease'],
-                                showConsultNowButton: showConsultNowButton,
+                                // showConsultNowButton: showConsultNowButton,
                               ),
                             );
                           },
@@ -312,7 +312,7 @@ class _ScheduledappointmentspageState extends State<Scheduledappointmentspage> {
     required String doctorName,
     required String doctorSpecialization,
     required String disease,
-    required bool showConsultNowButton,
+    // required bool showConsultNowButton,
   }) {
     final formattedScheduledAt =
         _formatScheduledAt(appointmentDate, appointmentTimeSlot);
@@ -351,21 +351,21 @@ class _ScheduledappointmentspageState extends State<Scheduledappointmentspage> {
             SizedBox(height: 4),
             _buildInfoRow('Scheduled At : ', formattedScheduledAt),
             SizedBox(height: 12),
-            showConsultNowButton
-                ? CommonWidgets().commonbutton(
-                    ontap: () {
-                      Get.toNamed(PageRoutes.videocallmainpage);
-                    },
-                    title: Text(
-                      'Consult Now',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                : SizedBox(),
+            // showConsultNowButton
+            //     ? CommonWidgets().commonbutton(
+            //         ontap: () {
+            //           Get.toNamed(PageRoutes.videocallmainpage);
+            //         },
+            //         title: Text(
+            //           'Consult Now',
+            //           style: TextStyle(
+            //             color: Colors.white,
+            //             fontSize: 12.sp,
+            //             fontWeight: FontWeight.bold,
+            //           ),
+            //         ),
+            //       )
+            //     : SizedBox(),
           ],
         ),
       ),
