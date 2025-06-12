@@ -226,8 +226,12 @@ class _HomepageState extends State<Homepage> {
                                       ),
                                       ontap: () {
                                         Get.toNamed(
-                                          PageRoutes.categorydetailpage,
-                                        );
+                                            PageRoutes.categorydetailpage,
+                                            arguments: {
+                                              'categoryName': data['name'],
+                                              'categoryId':
+                                                  data['id'].toString(),
+                                            });
                                       },
                                     ),
                                   ],
@@ -253,8 +257,12 @@ class _HomepageState extends State<Homepage> {
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: GestureDetector(
-                            onTap: () =>
-                                Get.toNamed(PageRoutes.categorydetailpage),
+                            onTap: () => Get.toNamed(
+                                PageRoutes.categorydetailpage,
+                                arguments: {
+                                  'categoryName': data['name'],
+                                  'categoryId': data['id'].toString(),
+                                }),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -285,96 +293,53 @@ class _HomepageState extends State<Homepage> {
             SizedBox(height: 20.h),
             WellnessSection(),
             SizedBox(height: 20.h),
-            Text(
-              'Activities',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Constants.buttoncolor,
+                borderRadius: BorderRadius.circular(12).r,
               ),
-            ),
-            Constants().h10,
-            ListView.builder(
-              itemCount: 2,
-              shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) {
-                var images = [
-                  'assets/images/0e4da77312f3cdaf1fb4ca76413499dc.png',
-                  'assets/images/2195c1d242926995266846621b834170.png',
-                ];
-                var titles = ['Daily Live Yoga Classes', '1-Day workshop'];
-                var subtitle = ['Morning-6.30-7.30 Am', 'Benefits of Ayurveda'];
-                var text = ['Evening-6.30-7.30 Pm', 'Morning-6.30-7.30 Am'];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10).r,
-                  child: GestureDetector(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        CommonWidgets().snackBarinfo(
-                          'This Feature will Coming Soon',
-                          color: Colors.green,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0).r,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 100.w,
-                              height: 100.h,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10.r),
-                                child: Image.asset(
-                                  images[index],
-                                  fit: BoxFit.fitHeight,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  titles[index],
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  subtitle[index],
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                                Text(
-                                  text[index],
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+              padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 20.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Dayush Clinics',
+                    style: TextStyle(
+                      color: Colors.white, // Dark teal color
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
+                  SizedBox(height: 5.h),
+                  // Subheading
+                  Text(
+                    'One Stop Solution For Digital Consultations In Alternate Medicine Treatments.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  CommonWidgets().commonbutton(
+                    buttonColor: Colors.white,
+                    title: Text(
+                      'Know More About Us',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    ontap: () {
+                      Get.toNamed(PageRoutes.aboutus);
+                    },
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 20.h)
           ],
         ),
       ),

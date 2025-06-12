@@ -26,16 +26,27 @@ class _CategorydetailpageState extends State<Categorydetailpage> {
   @override
   void initState() {
     super.initState();
+    final arguments = Get.arguments;
+    selectedTab = arguments?['categoryName'] ?? '';
+    if (arguments != null && arguments['categoryId'] != null) {
+      doctorCategoryController.selectedCategoryId.value =
+          arguments['categoryId'];
+      doctorCategoryController.getAvailableCategoryDoctors(
+        categoryId: arguments['categoryId'],
+      );
+    }
+
     homecontroller.getAllCategories().then((_) {
-      if (homecontroller.categories.isNotEmpty) {
+      if (homecontroller.categories.isNotEmpty && arguments == null) {
         final firstCategory = homecontroller.categories[0];
-        selectedTab = firstCategory['name'];
-        doctorCategoryController.selectedCategoryId.value =
-            firstCategory['id'].toString();
-        doctorCategoryController.getAvailableCategoryDoctors(
-          categoryId: firstCategory['id'].toString(),
-        );
-        setState(() {}); // trigger UI update after setting selectedTab
+        setState(() {
+          selectedTab = firstCategory['name'];
+          doctorCategoryController.selectedCategoryId.value =
+              firstCategory['id'].toString();
+          doctorCategoryController.getAvailableCategoryDoctors(
+            categoryId: firstCategory['id'].toString(),
+          );
+        });
       }
     });
   }
@@ -323,11 +334,15 @@ class _DoctorCardState extends State<DoctorCard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Dr. ${widget.name}",
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Text(
+                              "Dr. ${widget.name}",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                             ),
                           ),
                           Text(
@@ -337,6 +352,8 @@ class _DoctorCardState extends State<DoctorCard> {
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
                             ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ],
                       ),

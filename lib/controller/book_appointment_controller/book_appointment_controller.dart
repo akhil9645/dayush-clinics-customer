@@ -112,4 +112,24 @@ class BookAppointmentController extends GetxController {
       return false;
     }
   }
+
+  Future<Map<String, dynamic>?> getPhonePeMerchantId(var consultationId) async {
+    try {
+      var body = {"consultation_id": consultationId};
+      var response = await DioHandler.dioPOSTWithAuth(
+        endpoint: 'payment/generate-token/',
+        body: body,
+      );
+      if (response != null) {
+        log("PhonePe Credentials Response: ${response.toString()}");
+        return response as Map<String, dynamic>;
+      } else {
+        log("Empty response from payment/generate-token/");
+        return null;
+      }
+    } catch (e) {
+      log("Exception in getPhonePeMerchantId: $e");
+      return null;
+    }
+  }
 }

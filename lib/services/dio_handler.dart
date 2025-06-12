@@ -6,9 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart' as getx;
 
 class DioHandler {
-  static const baseUrl = 'http://65.1.92.125:8080/';
-  // static const baseUrl =
-  //     'https://0b86-2401-4900-8fdc-c657-1daf-728f-7b13-a667.ngrok-free.app/';
+  // static const baseUrl = 'http://65.1.92.125:8080/';
+  static const baseUrl = 'https://94a4-202-83-55-217.ngrok-free.app/';
 
   static final TokenStorageService _tokenStorage = TokenStorageService();
 

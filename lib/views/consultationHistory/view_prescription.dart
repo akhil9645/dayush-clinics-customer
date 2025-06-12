@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 import 'dart:io';
 import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -93,23 +94,21 @@ class _ViewPrescriptionState extends State<ViewPrescription> {
         return;
       }
 
+      // Handle permissions
       if (Platform.isAndroid) {
-        var status = await Permission.storage.status;
-        if (!status.isGranted) {
-          status = await Permission.storage.request();
-          if (!status.isGranted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              CommonWidgets().snackBarinfo('Storage permission denied.',
-                  color: Colors.red),
-            );
-            return;
-          }
+        if (await _requestStoragePermission() == false) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            CommonWidgets()
+                .snackBarinfo('Storage permission denied.', color: Colors.red),
+          );
+          return;
         }
       }
 
       Directory? directory;
       String fileName =
           'Prescription_${DateTime.now().millisecondsSinceEpoch}.pdf';
+
       if (Platform.isAndroid) {
         directory = Directory('/storage/emulated/0/Download');
       } else {
@@ -147,6 +146,22 @@ class _ViewPrescriptionState extends State<ViewPrescription> {
         CommonWidgets().snackBarinfo('Failed to save PDF.', color: Colors.red),
       );
     }
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      if (await Permission.storage.isGranted) return true;
+
+      var androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt >= 33) {
+        // No need to request storage for PDF - manage differently or use file picker
+        return true; // Still allow if you can write to Downloads directly
+      } else {
+        var status = await Permission.storage.request();
+        return status.isGranted;
+      }
+    }
+    return true;
   }
 
   Future<void> _sharePdf() async {
