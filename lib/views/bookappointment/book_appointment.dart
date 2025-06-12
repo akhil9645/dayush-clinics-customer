@@ -38,6 +38,7 @@ class _BookAppointmentState extends State<BookAppointment> {
   final String callbackUrl = "";
   bool enableLogging = true;
   String token = '';
+  double? totalamount;
 
   Map<String, dynamic>? phonePeCredentials;
   bool isSdkInitialized = false;
@@ -136,7 +137,7 @@ class _BookAppointmentState extends State<BookAppointment> {
         "orderId": phonePeCredentials!['order_id'] ??
             "TX${DateTime.now().millisecondsSinceEpoch}",
         "merchantUserId": "MUID${data?['doctor']['user']['id'] ?? '123'}",
-        "amount": phonePeCredentials!['amount'] ?? (amount * 100).toInt(),
+        "amount": totalamount,
         "callbackUrl": callbackUrl,
         "mobileNumber": "9999999999",
         "paymentMode": {"type": "PAY_PAGE"},
@@ -168,7 +169,6 @@ class _BookAppointmentState extends State<BookAppointment> {
 
       final paymentData = await generatePaymentPayloadAndChecksum(amount);
       String jsonPayload = paymentData['jsonPayload']!;
-      String checksum = paymentData['checksum']!;
 
       String appSchema =
           ""; // Set your custom app schema if required (optional for Android)
@@ -259,304 +259,11 @@ class _BookAppointmentState extends State<BookAppointment> {
         padding: const EdgeInsets.only(left: 20, right: 20, top: 20).r,
         child: ListView(
           children: [
-            Container(
-              margin: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12).r,
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10).r,
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8).r,
-                          child: Image.asset(
-                            'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png',
-                            width: 100.w,
-                            height: 120.h,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Dr. ${data?['doctor']['user']['username']}",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                '${data?['doctor']['designation']}',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                '₹$formattedFee per Session',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              SizedBox(height: 5.h),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.person,
-                                    color: Constants.buttoncolor,
-                                    size: 20.sp,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Experience',
-                                        style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${data?['doctor']['years_of_experience'] ?? '0'} Years',
-                                        style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: Colors.grey[600],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                spacing: 4.w, // Space between icon and text
-                                children: [
-                                  Icon(
-                                    Icons.language_rounded,
-                                    color: Constants.buttoncolor,
-                                    size: 20.sp,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Languages',
-                                        style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 150.w,
-                                        child: Text(
-                                          '${data?['doctor']['languages'] ?? ''}',
-                                          style: TextStyle(
-                                            fontSize: 10.sp,
-                                            color: Colors.grey[600],
-                                          ),
-                                          softWrap: true, // Allow text to wrap
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 4.h),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      isExpanded || !showSeeMore ? fullText : '$shortText...',
-                      style: TextStyle(fontSize: 12.sp, color: Colors.black),
-                    ),
-                    if (showSeeMore)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isExpanded = !isExpanded;
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            isExpanded ? 'See less' : 'See more',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
+            doctorDetailCard(formattedFee, showSeeMore, fullText, shortText),
             Constants().h10,
             data?['from'] == 'consultnow'
-                ? SizedBox()
-                : Column(
-                    children: [
-                      Obx(
-                        () => Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: TableCalendar(
-                            firstDay: DateTime.utc(2010, 10, 16),
-                            lastDay: DateTime.utc(2030, 3, 14),
-                            focusedDay:
-                                bookAppointmentController.focusedDay.value,
-                            calendarFormat:
-                                bookAppointmentController.calendarFormat.value,
-                            selectedDayPredicate: (day) {
-                              return isSameDay(
-                                bookAppointmentController.selectedDay.value,
-                                day,
-                              );
-                            },
-                            onDaySelected: (selectedDay, focusedDay) {
-                              bookAppointmentController.selectedDay.value =
-                                  selectedDay;
-                              bookAppointmentController.focusedDay.value =
-                                  focusedDay;
-                              bookAppointmentController
-                                  .filterSlotsBySelectedDate();
-                            },
-                            onFormatChanged: (format) {
-                              bookAppointmentController.calendarFormat.value =
-                                  format;
-                            },
-                            onPageChanged: (focusedDay) {
-                              bookAppointmentController.focusedDay.value =
-                                  focusedDay;
-                            },
-                            enabledDayPredicate: (day) {
-                              return bookAppointmentController.isDateAvailable(
-                                day,
-                              );
-                            },
-                            calendarStyle: CalendarStyle(
-                              todayDecoration: BoxDecoration(
-                                color: Color.fromRGBO(73, 135, 255, 0.25),
-                                shape: BoxShape.circle,
-                              ),
-                              todayTextStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              selectedTextStyle: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              selectedDecoration: BoxDecoration(
-                                color: Constants.buttoncolor,
-                                shape: BoxShape.circle,
-                              ),
-                              outsideDaysVisible: true,
-                              outsideTextStyle: TextStyle(
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                            headerStyle: HeaderStyle(
-                              formatButtonVisible: false,
-                              titleCentered: true,
-                              leftChevronIcon: Icon(Icons.chevron_left),
-                              rightChevronIcon: Icon(Icons.chevron_right),
-                            ),
-                            daysOfWeekStyle: DaysOfWeekStyle(
-                              weekdayStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                              weekendStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Divider(color: Colors.grey.shade300),
-                      SizedBox(height: 15.h),
-                      Obx(
-                        () => Text(
-                          'Select Time Slot on ${DateFormat('dd/MM/yyyy').format(bookAppointmentController.selectedDay.value)}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14.sp,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Obx(
-                        () => GridView.builder(
-                          shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 4.8,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                          ),
-                          itemCount: bookAppointmentController
-                              .filteredSlotsForSelectedDay.length,
-                          itemBuilder: (context, index) {
-                            var data = bookAppointmentController
-                                .filteredSlotsForSelectedDay[index];
-                            return Obx(
-                              () => ElevatedButton(
-                                onPressed: () {
-                                  bookAppointmentController
-                                      .selectedTimeSlot.value = data.timeSlot;
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: bookAppointmentController
-                                              .selectedTimeSlot.value ==
-                                          data.timeSlot
-                                      ? Constants.buttoncolor
-                                      : Colors.white,
-                                  foregroundColor: bookAppointmentController
-                                              .selectedTimeSlot.value ==
-                                          data.timeSlot
-                                      ? Colors.white
-                                      : Colors.black,
-                                  side: BorderSide.none,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: Text(data.timeSlot),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                ? consultNowWidget(formattedFee)
+                : appointmentWidget(formattedFee),
             SizedBox(height: 15.h),
             data?['from'] == 'consultnow'
                 ? Column(
@@ -582,9 +289,7 @@ class _BookAppointmentState extends State<BookAppointment> {
             // Parse consultation fee
             double consultationFee = 0.0;
             try {
-              consultationFee = double.parse(
-                data?['doctor']['consultation_fee'].toString() ?? '0',
-              );
+              consultationFee = totalamount!;
               if (consultationFee < 1 || consultationFee > 1000) {
                 throw Exception('Amount must be between ₹1 and ₹1000 for UAT');
               }
@@ -737,6 +442,426 @@ class _BookAppointmentState extends State<BookAppointment> {
           },
         ),
       ),
+    );
+  }
+
+  Container doctorDetailCard(
+      String formattedFee, showSeeMore, fullText, shortText) {
+    return Container(
+      margin: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12).r,
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10).r,
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8).r,
+                  child: Image.asset(
+                    'assets/images/dcc39e9c2cc296b8f484a100aa6a49e9.png',
+                    width: 100.w,
+                    height: 120.h,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Dr. ${data?['doctor']['user']['username']}",
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        '${data?['doctor']['designation']}',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        '₹$formattedFee per Session',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.person,
+                            color: Constants.buttoncolor,
+                            size: 20.sp,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Experience',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                '${data?['doctor']['years_of_experience'] ?? '0'} Years',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5.h),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        spacing: 4.w, // Space between icon and text
+                        children: [
+                          Icon(
+                            Icons.language_rounded,
+                            color: Constants.buttoncolor,
+                            size: 20.sp,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Languages',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 150.w,
+                                child: Text(
+                                  '${data?['doctor']['languages'] ?? ''}',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: Colors.grey[600],
+                                  ),
+                                  softWrap: true, // Allow text to wrap
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4.h),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 5.h),
+            Text(
+              isExpanded || !showSeeMore ? fullText : '$shortText...',
+              style: TextStyle(fontSize: 12.sp, color: Colors.black),
+            ),
+            if (showSeeMore)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(
+                    isExpanded ? 'See less' : 'See more',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Column consultNowWidget(String amount) {
+    final double consultationFee = double.tryParse(amount) ?? 0.0;
+    final double platformFee = consultationFee * 0.20;
+    final double tax = consultationFee * 0.04;
+    totalamount = consultationFee + platformFee + tax;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 10.h),
+        Row(
+          children: [
+            Icon(Icons.receipt_long_rounded, color: Colors.black),
+            SizedBox(width: 5.w),
+            Text(
+              'Payment Details',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 14.sp,
+              ),
+            ),
+          ],
+        ),
+        Divider(color: Colors.grey.shade300),
+        SizedBox(height: 10.h),
+
+        /// Consultation Fee
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Consultation Fee',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 12.sp,
+              ),
+            ),
+            Text(
+              '₹${consultationFee.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 5.h),
+
+        /// Platform Fee (20%)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Platform Fee',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 12.sp,
+              ),
+            ),
+            Text(
+              '₹${platformFee.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 5.h),
+
+        /// Taxes (4%)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Taxes & Other Charges',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 12.sp,
+              ),
+            ),
+            Text(
+              '₹${tax.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        Divider(color: Colors.grey.shade300),
+        SizedBox(height: 5.h),
+
+        /// Total Amount
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Total Amount',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 13.sp,
+              ),
+            ),
+            Text(
+              '₹${totalamount?.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 13.sp,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Column appointmentWidget(String amount) {
+    return Column(
+      children: [
+        Obx(
+          () => Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: TableCalendar(
+              firstDay: DateTime.utc(2010, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              focusedDay: bookAppointmentController.focusedDay.value,
+              calendarFormat: bookAppointmentController.calendarFormat.value,
+              selectedDayPredicate: (day) {
+                return isSameDay(
+                  bookAppointmentController.selectedDay.value,
+                  day,
+                );
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                bookAppointmentController.selectedDay.value = selectedDay;
+                bookAppointmentController.focusedDay.value = focusedDay;
+                bookAppointmentController.filterSlotsBySelectedDate();
+              },
+              onFormatChanged: (format) {
+                bookAppointmentController.calendarFormat.value = format;
+              },
+              onPageChanged: (focusedDay) {
+                bookAppointmentController.focusedDay.value = focusedDay;
+              },
+              enabledDayPredicate: (day) {
+                return bookAppointmentController.isDateAvailable(
+                  day,
+                );
+              },
+              calendarStyle: CalendarStyle(
+                todayDecoration: BoxDecoration(
+                  color: Color.fromRGBO(73, 135, 255, 0.25),
+                  shape: BoxShape.circle,
+                ),
+                todayTextStyle: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                ),
+                selectedTextStyle: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+                selectedDecoration: BoxDecoration(
+                  color: Constants.buttoncolor,
+                  shape: BoxShape.circle,
+                ),
+                outsideDaysVisible: true,
+                outsideTextStyle: TextStyle(
+                  color: Colors.grey[400],
+                ),
+              ),
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+                leftChevronIcon: Icon(Icons.chevron_left),
+                rightChevronIcon: Icon(Icons.chevron_right),
+              ),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                weekendStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 15.h),
+        Divider(color: Colors.grey.shade300),
+        SizedBox(height: 15.h),
+        Obx(
+          () => Text(
+            'Select Time Slot on ${DateFormat('dd/MM/yyyy').format(bookAppointmentController.selectedDay.value)}',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 14.sp,
+            ),
+          ),
+        ),
+        SizedBox(height: 15.h),
+        Obx(
+          () => GridView.builder(
+            shrinkWrap: true,
+            physics: BouncingScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 4.8,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount:
+                bookAppointmentController.filteredSlotsForSelectedDay.length,
+            itemBuilder: (context, index) {
+              var data =
+                  bookAppointmentController.filteredSlotsForSelectedDay[index];
+              return Obx(
+                () => ElevatedButton(
+                  onPressed: () {
+                    bookAppointmentController.selectedTimeSlot.value =
+                        data.timeSlot;
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        bookAppointmentController.selectedTimeSlot.value ==
+                                data.timeSlot
+                            ? Constants.buttoncolor
+                            : Colors.white,
+                    foregroundColor:
+                        bookAppointmentController.selectedTimeSlot.value ==
+                                data.timeSlot
+                            ? Colors.white
+                            : Colors.black,
+                    side: BorderSide.none,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(data.timeSlot),
+                ),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Divider(color: Colors.grey.shade300),
+        Obx(() => bookAppointmentController.selectedTimeSlot.value.isNotEmpty
+            ? consultNowWidget(amount)
+            : SizedBox())
+      ],
     );
   }
 }

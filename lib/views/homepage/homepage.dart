@@ -95,12 +95,13 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 20).r,
-        child: ListView(
-          children: [
-            Obx(
-              () => Text(
+      body: ListView(
+        children: [
+          SizedBox(height: 20.h),
+          Obx(
+            () => Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20).r,
+              child: Text(
                 'Hi ${profileController.username}',
                 style: TextStyle(
                   color: Colors.black,
@@ -109,23 +110,32 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
             ),
-            Text(
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20).r,
+            child: Text(
               'What are you looking for?',
               style: TextStyle(fontSize: 12.sp, color: Colors.grey),
             ),
-            Constants().h10,
-            Constants().h10,
-            Text(
-              'Select Category',
+          ),
+          Constants().h10,
+          Constants().h10,
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20).r,
+            child: Text(
+              'Select Treatment',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            Constants().h10,
-            Obx(
-              () => GridView.builder(
+          ),
+          Constants().h10,
+          Obx(
+            () => Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20).r,
+              child: GridView.builder(
                 shrinkWrap: true,
                 itemCount: homecontroller.categories.length,
                 physics: NeverScrollableScrollPhysics(),
@@ -290,58 +300,58 @@ class _HomepageState extends State<Homepage> {
                 },
               ),
             ),
-            SizedBox(height: 20.h),
-            WellnessSection(),
-            SizedBox(height: 20.h),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Constants.buttoncolor,
-                borderRadius: BorderRadius.circular(12).r,
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 20.r),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Dayush Clinics',
+          ),
+          SizedBox(height: 20.h),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20).r,
+            child: WellnessSection(),
+          ),
+          SizedBox(height: 20.h),
+          Container(
+            width: double.infinity,
+            color: Constants.buttoncolor,
+            padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Dayush Clinics',
+                  style: TextStyle(
+                    color: Colors.white, // Dark teal color
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 5.h),
+                // Subheading
+                Text(
+                  'One Stop Solution For Digital Consultations In Alternate Medicine Treatments.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                CommonWidgets().commonbutton(
+                  buttonColor: Colors.white,
+                  title: Text(
+                    'Know More About Us',
                     style: TextStyle(
-                      color: Colors.white, // Dark teal color
-                      fontSize: 24.sp,
+                      color: Colors.black,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 5.h),
-                  // Subheading
-                  Text(
-                    'One Stop Solution For Digital Consultations In Alternate Medicine Treatments.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  CommonWidgets().commonbutton(
-                    buttonColor: Colors.white,
-                    title: Text(
-                      'Know More About Us',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    ontap: () {
-                      Get.toNamed(PageRoutes.aboutus);
-                    },
-                  ),
-                ],
-              ),
+                  ontap: () {
+                    Get.toNamed(PageRoutes.aboutus);
+                  },
+                ),
+                SizedBox(height: 20.h)
+              ],
             ),
-            SizedBox(height: 20.h)
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

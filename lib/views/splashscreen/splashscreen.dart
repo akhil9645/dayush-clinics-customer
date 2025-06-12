@@ -21,7 +21,7 @@ class Splashscreen extends StatelessWidget {
               width: double.infinity,
               height: MediaQuery.of(context).size.width / 2,
               child: Image.asset(
-                  'assets/images/234293ffa59fad969db4a07ea957962a.png'),
+                  'assets/images/59cc1b60234293ffa59fad969db4a07ea957962a.png'),
             ),
             SvgPicture.asset('assets/svg/splashscreen.svg'),
           ],
