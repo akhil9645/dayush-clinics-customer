@@ -258,7 +258,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                                 arguments: {
                                   'appbartitle': "Terms & Conditions",
                                   'pdffilepath':
-                                      "assets/pdf/consent of consultation.pdf"
+                                      "assets/pdf/privacy policy telemedicine.pdf"
                                 });
                           },
                           child: Text(

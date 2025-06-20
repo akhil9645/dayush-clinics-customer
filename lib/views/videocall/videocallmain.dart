@@ -1,8 +1,11 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:dayush_clinic/controller/book_appointment_controller/book_appointment_controller.dart';
 import 'package:dayush_clinic/utils/routes.dart';
+import 'package:dayush_clinic/views/common_widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:developer' as developer;
 
@@ -95,10 +98,11 @@ class _VideocallmainState extends State<Videocallmain> {
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
-          developer.log("Remote user $remoteUid left channel");
+          developer.log("Remote user $remoteUid left channel, reason: $reason");
           setState(() {
             _remoteUid = null;
           });
+          _endCall();
         },
       ),
     );
@@ -155,7 +159,93 @@ class _VideocallmainState extends State<Videocallmain> {
 
   Future<void> _endCall() async {
     await _dispose();
-    Get.offAllNamed(PageRoutes.homepage);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        Future.delayed(Duration(seconds: 5), () {
+          if (mounted && Navigator.of(context).canPop()) {
+            Navigator.of(context).pop(); // Close the dialog
+            Get.offAllNamed(PageRoutes.homepage);
+          }
+        });
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.r),
+          ),
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.all(20.r),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/Animation - 1749205098384.gif',
+                  ),
+                ),
+              ),
+              Text(
+                'Consultation Completed!',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10.h),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Check Consultation History to ',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12.sp,
+                        fontFamily: GoogleFonts.dmSans().fontFamily,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Download Prescription',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12.sp,
+                        fontFamily: GoogleFonts.dmSans().fontFamily,
+                        fontWeight:
+                            FontWeight.bold, // Bold for "Download Prescription"
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 5.h),
+            ],
+          ),
+          actions: [
+            CommonWidgets().commonbutton(
+              title: Text(
+                'Go to Homepage',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              ontap: () {
+                Navigator.of(context).pop();
+                Get.offAllNamed(PageRoutes.homepage);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

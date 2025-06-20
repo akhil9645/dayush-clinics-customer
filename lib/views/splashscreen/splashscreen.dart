@@ -1,16 +1,11 @@
-import 'package:dayush_clinic/controller/appcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 
 class Splashscreen extends StatelessWidget {
-  Splashscreen({super.key});
-
-  final Appcontroller controller = Get.put(Appcontroller());
+  const Splashscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    controller.splashCheck();
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,

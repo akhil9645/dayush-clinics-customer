@@ -2,7 +2,7 @@ name: dayush_clinic
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+5
+version: 1.0.0+8
 
 environment:
   sdk: ^3.6.0
@@ -64,4 +64,4 @@ flutter:
     - assets/svg/
     - assets/svg/authicons/
     - assets/pdf/DAYUSH_CLINICS_Complete_Legal_and_Policy_Document.pdf
-    - assets/pdf/consent of consultation.pdf
+    - assets/pdf/privacy policy telemedicine.pdf

@@ -337,6 +337,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                   if (status == true) {
                     showDialog(
                       context: context,
+                      barrierDismissible: false,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           shape: RoundedRectangleBorder(
